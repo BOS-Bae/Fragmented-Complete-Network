@@ -131,7 +131,8 @@ bool check_absorbing(int rule_num, int mat_i[][N]){
 	return bool_val;
 }
 
-void ABM_complete(int rule_num, int mat_i[][N]){
+unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
+	unsigned long long idx = 0;
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> dist(0, N-1);
@@ -164,13 +165,13 @@ void ABM_complete(int rule_num, int mat_i[][N]){
 		//print_mat(mat_i);
 
 		if (check_absorbing(rule_num, mat_i))	{
-				print_mat(mat_i);
-				cout << "\n";
-				//int idx = mat_to_idx(mat_i);
-				//cout << idx << "\n";
+				//print_mat(mat_i);
+				//cout << "\n";
+				idx = mat_to_idx(mat_i);
 				break;
-		}
+		}	
 	}
+	return idx;
 }
 
 int main(int argc, char *argv[]) {
@@ -183,15 +184,27 @@ int main(int argc, char *argv[]) {
 	//int t_delta = 10*N;
 			
 	int mat_i[N][N] = {{1,1,1,-1,-1},{1,1,1,-1,-1},{1,1,1,-1,-1},{-1,-1,-1,1,-1},{-1,-1,-1,-1,1}};
+	int mat_d1[N][N] = {{1,-1,-1,-1,-1},{-1,1,1,-1,-1},{-1,1,1,-1,-1},{-1,-1,-1,1,-1},{-1,-1,-1,-1,1}};
+	int mat_d2[N][N] = {{1,-1,-1,-1,1},{-1,1,1,-1,-1},{-1,1,1,-1,-1},{-1,-1,-1,1,-1},{1,-1,-1,-1,1}};
+	int mat_d3[N][N] = {{1,1,1,-1,1},{1,1,1,-1,1},{1,1,1,-1,1},{-1,-1,-1,1,-1},{1,1,1,-1,1}};
+
+	unsigned long long org = mat_to_idx(mat_i);
+	unsigned long long d1 = mat_to_idx(mat_d1);
+	unsigned long long d2 = mat_to_idx(mat_d2);
+	unsigned long long d3 = mat_to_idx(mat_d3);
+	
 	//int mat_i[N][N] = {{1,1,1,1,1},{1,1,1,1,1},{1,1,1,1,1},{1,1,1,1,1},{1,1,1,1,1}};
 	//cout << mat_to_idx(mat_i) << "\n";	
 	if (init_idx == 0) mat_i[0][1] *= -1; // L7
-	else if (init_idx == 1) mat_i[1][0] *= -1;
-	else if (init_idx == 2) mat_i[0][4] *= -1; 
-	else if (init_idx == 3) mat_i[4][0] *= -1;
-	else cout << "Error : set 'init_idx' as 0 or 1." << "\n";
+	else if (init_idx == 1) mat_i[0][4] *= -1; 
+	else if (init_idx == 2) mat_i[4][0] *= -1;
+	else cout << "Error : set 'init_idx' as 0, 1, or 2." << "\n";
 
-	ABM_complete(rule_num, mat_i);
-
+	unsigned long long result = ABM_complete(rule_num, mat_i);
+	if (result == org) cout << 0 << "\n";
+	else if (result == d1) cout << 1 << "\n";
+	else if (result == d2) cout << 2 << "\n";
+	else if (result == d3) cout << 3 << "\n";
+	else cout << 4 << "\n";
 	return 0;
 }
