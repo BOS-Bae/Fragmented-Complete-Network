@@ -8,6 +8,6 @@ for r in ${rule_num[@]}
 	do
 	for ((i=0; i<=7; i++))
 		do
-			./frag_prob_N6 $r $i 10000 >> ./result_frag/L$r/idx$i.dat
+			./frag_prob_N6 $r $i 10000 >> ./result_frag_N6/L$r/idx$i.dat
 		done
 	done
