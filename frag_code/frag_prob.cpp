@@ -230,7 +230,7 @@ unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		cout << "./frag_prob_L7_L8 rule_num init_idx n_sample \n";
+		cout << "./frag_prob rule_num init_idx n_sample \n";
 		exit(1);
 	}
 	int rule_num = atoi(argv[1]);

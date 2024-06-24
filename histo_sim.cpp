@@ -176,7 +176,7 @@ unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
-		cout << "./sim_L7_L8 rule_num init_idx \n";
+		cout << "./histo_sim rule_num init_idx \n";
 		exit(1);
 	}
 	int rule_num = atoi(argv[1]);
