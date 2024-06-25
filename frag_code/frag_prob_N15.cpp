@@ -259,7 +259,7 @@ int main(int argc, char *argv[]) {
 	vector<vector<int>> subsets_14 = {{0,9,10,11},{1,2,3,4},{5,6,7,8},{12,13},{14}}; subsets_list.push_back(subsets_14);
 	vector<vector<int>> subsets_15 = {{0,1,2,3,4,12},{5,6,7,8},{9,10,11},{13},{14}}; subsets_list.push_back(subsets_15);
 	vector<vector<int>> subsets_16 = {{0,1,2,3,4,10,11},{5,6,7,8},{9},{12,13},{14}}; subsets_list.push_back(subsets_16);
-	vector<vector<int>> subsets_17 = {{0,1,2,3,4,6,7,8},{6,7,8},{9,10,11},{12,13},{14}}; subsets_list.push_back(subsets_17);
+	vector<vector<int>> subsets_17 = {{0,1,2,3,4,6,7,8},{5},{9,10,11},{12,13},{14}}; subsets_list.push_back(subsets_17);
 	vector<vector<int>> subsets_18 = {{0},{1,2,3,4,5,6,7,8},{9,10,11},{12,13},{14}}; subsets_list.push_back(subsets_18);
 	vector<vector<int>> subsets_19 = {{0},{1,2,3,4,9,10,11},{5,6,7,8},{12,13},{14}}; subsets_list.push_back(subsets_19);
 	vector<vector<int>> subsets_20 = {{0},{1,2,3,4,12,13},{5,6,7,8},{9,10,11},{14}}; subsets_list.push_back(subsets_20);
