@@ -279,7 +279,7 @@ int main(int argc, char *argv[]) {
 		subset_to_mat(subsets_i, mat_i);
 		
 		if (init_idx == 0) mat_i[0][1] *= -1;
-		else if (init_idx == 1) mat_i[1][0] *= -1; 
+		else if (init_idx == 1) mat_i[7][8] *= -1; 
 		else if (init_idx == 2) mat_i[0][4] *= -1; 
 		else if (init_idx == 3) mat_i[4][0] *= -1;
 		else if (init_idx == 4) mat_i[0][7] *= -1;
