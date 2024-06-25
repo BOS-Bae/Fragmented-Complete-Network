@@ -237,7 +237,7 @@ int main(int argc, char *argv[]) {
 	int init_idx = atoi(argv[2]);
 	int n_sample = atoi(argv[3]);
 	
-	int confi_len	= 22;
+	int confi_len	= 23;
 	double result_arr[confi_len] = {0};
 
 	vector<vector<vector<int>>> subsets_list;
@@ -264,6 +264,7 @@ int main(int argc, char *argv[]) {
 	vector<vector<int>> subsets_19 = {{0},{1,2,3,4,9,10,11},{5,6,7,8},{12,13},{14}}; subsets_list.push_back(subsets_19);
 	vector<vector<int>> subsets_20 = {{0},{1,2,3,4,12,13},{5,6,7,8},{9,10,11},{14}}; subsets_list.push_back(subsets_20);
 	vector<vector<int>> subsets_21 = {{0},{1,2,3,4,14},{5,6,7,8},{9,10,11},{12,13}}; subsets_list.push_back(subsets_21);
+	vector<vector<int>> subsets_22 = {{0,1,2,3,4,13},{5,6,7,8},{9,10,11},{12},{14}}; subsets_list.push_back(subsets_22);
 	
 	for (int n_s=0; n_s<n_sample; n_s++){
 		int mat_i[N][N];
