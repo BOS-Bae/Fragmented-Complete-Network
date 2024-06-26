@@ -265,7 +265,14 @@ int main(int argc, char *argv[]) {
 	vector<vector<int>> subsets_20 = {{0},{1,2,3,4,12,13},{5,6,7,8},{9,10,11},{14}}; subsets_list.push_back(subsets_20);
 	vector<vector<int>> subsets_21 = {{0},{1,2,3,4,14},{5,6,7,8},{9,10,11},{12,13}}; subsets_list.push_back(subsets_21);
 	vector<vector<int>> subsets_22 = {{0,1,2,3,4,13},{5,6,7,8},{9,10,11},{12},{14}}; subsets_list.push_back(subsets_22);
-	
+	//int mat_tes[N][N];
+	//subset_to_mat(subsets_18, mat_tes);
+	//print_mat(mat_tes);
+	//cout << "\n";
+	//vector<vector<int>> subset_tes;
+	//mat_to_subset(mat_tes, subset_tes);
+	//print_subsets(subset_tes);
+
 	for (int n_s=0; n_s<n_sample; n_s++){
 		int mat_i[N][N];
 		subset_to_mat(subsets_i, mat_i);
@@ -314,10 +321,15 @@ int main(int argc, char *argv[]) {
 			}
 			else check += 1;
 		}
+		//if (result_arr[18] != 0) {
+		//		cout << n_s << "\n";
+		//		break;
+		//}
 		if (check == subsets_list.size()) print_mat(mat_i);
 	}
 	double summ = 0;
 	for (int i=0; i<confi_len; i++) {
+		//double elem = result_arr[i] == 0 ? 0 : result_arr[i] / (double)n_sample;
 		double elem = result_arr[i] / (double)n_sample;
 		cout << elem  << " "; 
 		summ += elem;
