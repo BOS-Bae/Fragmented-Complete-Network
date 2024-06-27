@@ -105,10 +105,8 @@ int L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 	int val = mat_f[o][d];
 	if (mat_f[d][r] == 1) val = mat_f[o][r];
 	else if (mat_f[d][r] == -1)	{
-		if (mat_f[o][d] == 1)
-			val = -mat_f[o][r];
-		else
-			val = -1;
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
 	}	
   int val_update = idx_err == 0 ? val : -val;
 	return val_update;
@@ -117,16 +115,12 @@ int L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 int L7_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 	int val = mat_f[o][d];
 	if (mat_f[d][r] == 1) {
-		if (mat_f[o][d] == 1)
-			val = 1;
-		else
-			val = mat_f[o][r];
+		if (mat_f[o][d] == 1) val = 1;
+		else val = mat_f[o][r];
 	}
 	else if (mat_f[d][r] == -1)	{
-		if (mat_f[o][d] == 1)
-			val = -mat_f[o][r];
-		else
-			val = -1;
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
 	}
   int val_update = idx_err == 0 ? val : -val;
 	return val_update;
