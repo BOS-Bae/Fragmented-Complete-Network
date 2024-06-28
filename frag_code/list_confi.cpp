@@ -354,45 +354,31 @@ unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 3) {
-		cout << "./frag_prob rule_num init_idx n_sample \n";
-		exit(1);
-	}
-	int rule_num = atoi(argv[1]);
-	int init_idx = atoi(argv[2]);
-	int n_sample = atoi(argv[3]);
-	
 	vector<vector<vector<int>>> subset_list;
 	vector<vector<int>> error_i;
 	vector<double> result_arr;
-	case_err_gen(subset_list, error_i, result_arr);
-	
-	int fr = error_i[init_idx][0];
-	int to = error_i[init_idx][1];
-	
-	for (int n_s=0; n_s<n_sample; n_s++){
-		int mat_i[N][N];
-		subset_to_mat(subset_list[0], mat_i);
-		mat_i[fr][to] *= -1;
-		
-		unsigned long long result = ABM_complete(rule_num, mat_i);
-		vector<vector<int>> subsets_f;
-		mat_to_subset(mat_i, subsets_f);
+	case_err_gen(subset_list, error_i, result_arr);	
 
-		int check = 0;
-		for (int i=0; i<subset_list.size(); i++) {
-			if (subsets_f == subset_list[i]) result_arr[i] += 1;
-			else check += 1;
-		}
-		if (check == subset_list.size()) print_mat(mat_i);
-	}
-	double summ = 0;
 	for (int i=0; i<subset_list.size(); i++) {
-		double elem = result_arr[i] / (double)n_sample;
-		cout << elem  << " "; 
-		summ += elem;
+		cout << "[" << i << "] -> ";
+		for (int j=0; j<subset_list[i].size(); j++) {
+			int cluster_len = subset_list[i][j].size();
+			for (int k=0; k<cluster_len; k++) {
+				if (k < cluster_len - 1) cout << subset_list[i][j][k] << ", ";
+				else cout << subset_list[i][j][k];
+			}
+			
+			if (j < subset_list[i].size() - 1) cout << " | ";
+			else cout << "\n";
+		}
+		cout << "\n";
 	}
-	cout << summ << "\n";
 
+	for (int i=0; i<error_i.size(); i++) { 
+		cout << "(" << i << ") -> ";
+		cout << "mat[" << error_i[i][0] << "][" << error_i[i][1] << "] *= -1";
+		cout << "\n"; 
+	}
+	
 	return 0;
 }
