@@ -140,7 +140,7 @@ void case_err_gen(vector<vector<vector<int>>> &subset_list, vector<vector<int>> 
 		}
 		subset_list.push_back(subset_j);
 		result_arr.push_back(0);
-	} // migration from 0 to another cluster
+	} // migration of 0 toward another cluster
 
 	for (int g=1; g<subset_i.size() - 1; g++) {
 		vector<vector<int>> subset_j;
@@ -159,9 +159,24 @@ void case_err_gen(vector<vector<vector<int>>> &subset_list, vector<vector<int>> 
 		}
 		subset_list.push_back(subset_j);
 		result_arr.push_back(0);
+	} // migration of one node from another cluster toward first cluster.
+	
+	for (int g=1; g<subset_i.size(); g++) {
+		vector<vector<int>> subset_j;
+		vector<int> cluster_j; cluster_j.push_back(0);
+		subset_j.push_back(cluster_j); cluster_j.clear();
+		for (int i=1; i<M; i++) cluster_j.push_back(subset_i[0][i]);
+		for (int i=0; i<subset_i[g].size(); i++) cluster_j.push_back(subset_i[g][i]);
+		subset_j.push_back(cluster_j);
+		cluster_j.clear();
+		for (int g_l=1; g_l<subset_i.size(); g_l++) {
+			if (g_l != g)	subset_j.push_back(subset_i[g_l]);
+		} // migration of M-1 nodes from first cluster toward another existing cluster.
+		subset_list.push_back(subset_j);
+		result_arr.push_back(0);
 	}
 }
- 
+
 void init_matrix(int mat[][N], int val) {
 	for (int i=0; i<N; i++) {
 		for (int j=0; j<N; j++) mat[i][j] = val;

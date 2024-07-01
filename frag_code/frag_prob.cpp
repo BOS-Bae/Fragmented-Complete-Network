@@ -409,6 +409,5 @@ int main(int argc, char *argv[]) {
 		summ += elem;
 	}
 	cout << summ << "\n";
-
 	return 0;
 }
