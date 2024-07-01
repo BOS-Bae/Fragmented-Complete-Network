@@ -17,6 +17,6 @@ for ((s=0; s<=$ns; s++))
 	do
 		for r in ${rule_num[@]}
 			do
-				./frag_prob $r $i 30000 > ./result_frag_N$N/L$r/idx$i-sample$s.dat
+				./frag_prob $r $i 30000 > ./result_frag_N$N/L$r/num_data/idx$i-sample$s.dat
 			done
 	done

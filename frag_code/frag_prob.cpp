@@ -13,7 +13,7 @@ using std::random_device;
 using std::mt19937;
 using std::vector;
 
-constexpr int M = 2;
+constexpr int M = 4;
 constexpr int N = M*(M+1)/2;
 
 void print_subsets(vector<vector<int>> &subsets) {
