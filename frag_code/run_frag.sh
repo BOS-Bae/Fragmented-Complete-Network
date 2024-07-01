@@ -1,6 +1,7 @@
 #!/bin/bash
 
 M=$1
+ns=$2
 N=0
 L=$((M+M-1))
 for ((i=1; i<=$M; i++))
@@ -9,10 +10,14 @@ for ((i=1; i<=$M; i++))
 	done
 
 rule_num=(7 8)
-for r in ${rule_num[@]}
+
+for ((s=0; s<$ns; s++))
 	do
-	for ((i=0; i<$L; i++))
-		do
-			./frag_prob $r $i 10000 >> ./result_frag_N$N/L$r/idx$i.dat
-		done
+		for r in ${rule_num[@]}
+			do
+			for ((i=0; i<$L; i++))
+				do
+					./frag_prob $r $i 30000 > ./result_frag_N$N/L$r/idx$i-sample$s.dat
+				done
+			done
 	done
