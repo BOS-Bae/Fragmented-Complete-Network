@@ -2,6 +2,7 @@
 
 M=$1
 ns=$2
+nit=$3
 N=0
 L=$((M+M-1))
 for ((i=1; i<=$M; i++))
@@ -17,7 +18,7 @@ for ((s=0; s<$ns; s++))
 			do
 			for ((i=0; i<$L; i++))
 				do
-					./frag_prob $r $i 100000 > ./result_frag_N$N/L$r/num_data/idx$i-sample$s.dat
+					./frag_prob $r $i $nit > ./result_frag_N$N/L$r/num_data/idx$i-sample$s.dat
 				done
 			done
 	done
