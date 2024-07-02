@@ -11,5 +11,6 @@ r = int(sys.argv[3])
 c_idx = int(sys.argv[4])
 
 for idx in range(idx_len):
-	data = np.loadtxt("./result_frag_N{}/L{}/idx{}.dat".format(N,r,idx))
-	print(idx, " ", data[c_idx])
+	data = np.loadtxt("./result_frag_N{}/L{}/idx{}-avg.dat".format(N,r,idx))
+	dat = np.transpose(data)
+	print(idx, " ", dat[0,c_idx], " ", dat[1,c_idx])
