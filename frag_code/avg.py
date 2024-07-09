@@ -1,13 +1,13 @@
 import numpy as np
 import sys
 
-if (len(sys.argv) < 2):
-	print("python3 avg.py M r_num")
+if (len(sys.argv) < 3):
+	print("python3 avg.py M r_num n_samples")
 	exit(1)
 
 M = int(sys.argv[1])
 r_num = int(sys.argv[2])
-n_s = 20 # number of samples
+n_s = int(sys.argv[3]) # number of samples
 
 L = (2*M - 1)
 N = 0
