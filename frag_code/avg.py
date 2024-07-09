@@ -30,4 +30,4 @@ for idx in range(L):
 	dat_f[1] = std_err
 	dat_result = np.transpose(dat_f)
 	
-	np.savetxt("./result_frag_N{}/L{}/idx{}-avg.dat".format(N, r_num, idx), dat_result)
+	np.savetxt("./result_frag_N{}/L{}/idx{}-avg.dat".format(N, r_num, idx), dat_result, fmt="%.6f")
