@@ -1,5 +1,6 @@
 #include <random>
 #include <vector>
+#include <fstream>
 #include <cmath>
 #include <algorithm>
 #include <iostream>
@@ -13,9 +14,6 @@ using std::random_device;
 using std::mt19937;
 using std::vector;
 
-constexpr int M = 5;
-constexpr int N = M*(M+1)/2;
-
 void print_subsets(vector<vector<int>> &subsets) {
 	for (int i=0; i<subsets.size(); i++){
 		for (int j=0; j<subsets[i].size(); j++) cout << subsets[i][j] << " ";
@@ -24,7 +22,7 @@ void print_subsets(vector<vector<int>> &subsets) {
 	cout << "\n";
 }
 
-void print_mat(int mat[][N]) {
+void print_mat(vector<vector<int>> &mat, int N) {
 	for (int i=0; i<N; i++) {
 		for (int j=0; j<N; j++) cout << mat[i][j] << " ";
 		cout << "\n";
@@ -42,8 +40,8 @@ void union_cluster(vector<vector<int>> &subset_i, vector<vector<int>> &subset_j,
 		if (g != g_plus) subset_j.push_back(subset_i[g]);
 	}
 }
-
-void case_err_gen(vector<vector<vector<int>>> &subset_list, vector<vector<int>> &error_i, vector<double> &result_arr) {
+ 
+void case_err_gen(vector<vector<vector<int>>> &subset_list, vector<vector<int>> &error_i, vector<double> &result_arr, int M) {
 	vector<vector<int>> subset_i;
 	int node_idx = 0;
 
@@ -175,16 +173,19 @@ void case_err_gen(vector<vector<vector<int>>> &subset_list, vector<vector<int>> 
 		subset_list.push_back(subset_j);
 		result_arr.push_back(0);
 	}
+
 }
 
-void init_matrix(int mat[][N], int val) {
+void init_matrix(vector<vector<int>> &mat, int val, int N) {
 	for (int i=0; i<N; i++) {
-		for (int j=0; j<N; j++) mat[i][j] = val;
-	}	
+		vector<int> list;
+		for (int j=0; j<N; j++) list.push_back(val);
+		mat.push_back(list);
+	}
 }
 
-void subset_to_mat(vector<vector<int>> &subsets_i, int mat[][N]) {
-	init_matrix(mat, -1);
+void subset_to_mat(vector<vector<int>> &subsets_i, vector<vector<int>> &mat, int N) {
+	init_matrix(mat, -1, N);
 	
 	for (int i=0; i<subsets_i.size(); i++) {
 		for (int j=0; j<subsets_i[i].size(); j++) {
@@ -198,7 +199,7 @@ void subset_to_mat(vector<vector<int>> &subsets_i, int mat[][N]) {
 	}
 }
 
-void mat_to_subset(int mat[][N], vector<vector<int>> &subsets) {
+void mat_to_subset(vector<vector<int>> &mat, vector<vector<int>> &subsets, int N) {
 	vector<int> cluster;
 	cluster.push_back(0);
 	for (int k=1; k<N; k++) {
@@ -223,31 +224,7 @@ void mat_to_subset(int mat[][N], vector<vector<int>> &subsets) {
 	}
 }
 
-void idx_to_mat(unsigned long long idx, int mat[][N]) {
-	int idx_tmp = idx;
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
-    	int M_ij = idx_tmp & 1;  // [TODO] check this line
-    	mat[i][j] = 2 * M_ij - 1;
-			idx_tmp = idx_tmp >> 1;
-    }
-  }
-}
-
-unsigned long long mat_to_idx(int mat[][N]) {
-  unsigned long long idx = 0, binary_num = 0;
-  idx = binary_num = 0;
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
-    	int element = ((int) (mat[i][j] + 1) / 2);
-    	idx += element * (int) pow(2, binary_num);
-    	binary_num += 1;
-    }
-  }
-  return idx;
-}
-
-int L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
+int L8_rule(vector<vector<int>> &mat_f, int o, int d, int r, int idx_err) {
 	int val = mat_f[o][d];
 	if (mat_f[d][r] == 1) val = mat_f[o][r];
 	else if (mat_f[d][r] == -1)	{
@@ -258,7 +235,7 @@ int L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 	return val_update;
 }
 
-int L7_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
+int L7_rule(vector<vector<int>> &mat_f, int o, int d, int r, int idx_err) {
 	int val = mat_f[o][d];
 	if (mat_f[d][r] == 1) {
 		if (mat_f[o][d] == 1) val = 1;
@@ -272,7 +249,7 @@ int L7_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 	return val_update;
 }
 
-int L4_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
+int L4_rule(vector<vector<int>> &mat_f, int o, int d, int r, int idx_err) {
   // mat_f should be empty matrix whose size is N by N.
   int val = mat_f[o][d];
   if (mat_f[d][r] == 1) {
@@ -285,18 +262,18 @@ int L4_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
 	return val_update;
 }
 
-int L6_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
+int L6_rule(vector<vector<int>> &mat_f, int o, int d, int r, int idx_err) {
   // mat_f should be empty matrix whose size is N by N.
   int val_update = (idx_err == 0 ? mat_f[o][r] * mat_f[d][r] : -mat_f[o][r] * mat_f[d][r]);
 	return val_update;
 }
 
-bool check_absorbing(int rule_num, int mat_i[][N]){
+bool check_absorbing(int rule_num, vector<vector<int>> &mat_i, int N){
 	bool bool_val = false;
 	int check = 0;
 	int count = 0;
-  int mat_f[N][N] = {0,};
-  std::copy(&mat_i[0][0], &mat_i[0][0] + N * N, &mat_f[0][0]);
+	vector<vector<int>> mat_f(N, vector<int>(N,0));
+  std::copy(mat_i.begin(), mat_i.end(), mat_f.begin());
 	for (int o=0; o<N; o++){
 		for (int d=0; d<N; d++){
 			for (int r=0; r<N; r++){
@@ -325,8 +302,7 @@ bool check_absorbing(int rule_num, int mat_i[][N]){
 	return bool_val;
 }
 
-unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
-	unsigned long long idx = 0;
+void ABM_complete(int rule_num, vector<vector<int>> &mat_i, int N){
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> dist(0, N-1);
@@ -358,42 +334,47 @@ unsigned long long ABM_complete(int rule_num, int mat_i[][N]){
 		for (int o=0; o<N; o++) mat_i[o][d] = update_od[o];
 		//print_mat(mat_i);
 
-		if (check_absorbing(rule_num, mat_i))	{
+		if (check_absorbing(rule_num, mat_i, N))	{
 				//print_mat(mat_i);
 				//cout << "\n";
-				idx = mat_to_idx(mat_i);
 				break;
 		}	
 	}
-	return idx;
 }
 
 int main(int argc, char *argv[]) {
+	int M = atoi(argv[1]);
+	int N = M*(M+1)/2;
 	vector<vector<vector<int>>> subset_list;
 	vector<vector<int>> error_i;
 	vector<double> result_arr;
-	case_err_gen(subset_list, error_i, result_arr);	
+	case_err_gen(subset_list, error_i, result_arr, M);
+	
+	std::ofstream opening;
+	char result[100];
+	sprintf(result, "./confi_N%d.txt", N);
+	opening.open(result);
 
 	for (int i=0; i<subset_list.size(); i++) {
-		cout << "[" << i << "] -> ";
+		opening << "[" << i << "] -> ";
 		for (int j=0; j<subset_list[i].size(); j++) {
 			int cluster_len = subset_list[i][j].size();
 			for (int k=0; k<cluster_len; k++) {
-				if (k < cluster_len - 1) cout << subset_list[i][j][k] << ", ";
-				else cout << subset_list[i][j][k];
+				if (k < cluster_len - 1) opening << subset_list[i][j][k] << ", ";
+				else opening << subset_list[i][j][k];
 			}
 			
-			if (j < subset_list[i].size() - 1) cout << " | ";
-			else cout << "\n";
+			if (j < subset_list[i].size() - 1) opening << " | ";
+			else opening << "\n";
 		}
-		cout << "\n";
+		opening << "\n";
 	}
 
 	for (int i=0; i<error_i.size(); i++) { 
-		cout << "(" << i << ") -> ";
-		cout << "mat[" << error_i[i][0] << "][" << error_i[i][1] << "] *= -1";
-		cout << "\n"; 
+		opening << "(" << i << ") -> ";
+		opening << "mat[" << error_i[i][0] << "][" << error_i[i][1] << "] *= -1";
+		opening << "\n"; 
 	}
-	
+	opening.close();
 	return 0;
 }
