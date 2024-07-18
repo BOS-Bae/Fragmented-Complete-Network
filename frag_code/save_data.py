@@ -44,14 +44,15 @@ for M in range(2, M_max+1):
             err_idx = idx - 1
             fr = fr_to_mat[err_idx][0]
             to = fr_to_mat[err_idx][1]
-            for c_idx in range(3*M - 3 + 1):
+            for c_idx in range(4*M - 5 + 1):
                 data = np.loadtxt("./result_frag_N{}/L{}/idx{}-avg.dat".format(N,r,idx))
                 dat = np.transpose(data)
                 dat_list = [int(fr), int(to), dat[0,c_idx], dat[1,c_idx]]
                 if (dat[0,c_idx] != 0 and dat[1,c_idx] != 0):
                     if ((c_idx == 1 and fr == M) or (c_idx > 1 and c_idx < M and M+1-fr == c_idx)) : p_data.append(dat_list)
-                    elif (c_idx >= M and c_idx < 2*M-1) : q_data.append(dat_list)
+                    elif (c_idx >= M and c_idx <= 2*M-2) : q_data.append(dat_list)
                     elif (c_idx >= 2*M-1 and c_idx <= 3*M-3) : r_data.append(dat_list)
+                    elif (c_idx >= 3*M-2 and c_idx <= 4*M-5) : r_data.append(dat_list)
     
 p_prime_dat = np.array(p_prime)
 np.savetxt('./prob_dat/dat/prime_L{}'.format(r), p_prime_dat, fmt='%.6f')
