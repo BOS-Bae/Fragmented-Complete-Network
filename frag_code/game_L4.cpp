@@ -166,7 +166,7 @@ int L1_rule(vector<vector<int>> &mat_f, int o, int d, int r, int act, int idx_er
 //	return bool_val;
 //}
 
-void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<double> &payoff, int N, int t_measure, int MCS, double err){
+void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<double> &payoff, int N, int t_measure, int MCS, double assess_err, double action_err) {
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> dist(0, N-1);
@@ -198,8 +198,10 @@ void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<dou
  			if (mat_i[d][d] == 1) act = mat_i[d][r];	
  			else act = 1;
  		}
+		if (dist_u(gen) < action_err) act *= -1;
+ 
 		for (int o=0; o<N; o++) {
-			int idx_err = dist_u(gen) < err ? 1 : 0; 
+			int idx_err = dist_u(gen) < assess_err ? 1 : 0; 
   	  switch (rule_type[o]) {
 				case 1 :
   	   	  update_od.push_back(L1_rule(mat_i, o, d, r, act, idx_err));
@@ -235,11 +237,11 @@ void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<dou
 				payoff[d] -= c;
 				payoff[r] += b;
 			}
-			count[d] += 1;
-			count[r] += 1;
+			count[d] += 0.5;
+			count[r] += 0.5;
 		}
 		if (t == MCS) {
-			print_mat(mat_i, N);
+			//print_mat(mat_i, N);
 			for (int i=0; i<N; i++) payoff[i] /= count[i];
 			break;
 		}
@@ -270,8 +272,8 @@ void init_property(vector<int> &property, int N) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 6) {
-		cout << "./game_L4 N mutant_rule n_sample MCS t_measure err \n";
+	if (argc < 7) {
+		cout << "./game_L4 N mutant_rule n_sample MCS t_measure assess_err action_err \n";
 		cout << "mutant_rule : 1 ~ 8 (leading eight). \n";
 		cout << "N should be set to be larger or equal to 50. \n";
 		exit(1);
@@ -282,8 +284,9 @@ int main(int argc, char *argv[]) {
 	int n_sample = atoi(argv[3]);
 	int MCS = atoi(argv[4]); // total Monte Carlo steps
 	int t_measure = atoi(argv[5]); // total Monte Carlo steps
-	double err = atof(argv[6]);
-	double frac_m = 0.3;
+	double assess_err = atof(argv[6]);
+	double action_err = atof(argv[7]);
+	double frac_m = 0.1;
 	int num_m = (int)(N * frac_m);
 
 	int resident_type = 4; // L4
@@ -300,7 +303,7 @@ int main(int argc, char *argv[]) {
 		//for (int i=0; i<N; i++) cout << rule_type[i] << " ";
 		//cout <<"\n";
 		vector<double> payoff(N, 0);
-		ABM_complete(mat_i, rule_type, payoff, N, t_measure, MCS, err);
+		ABM_complete(mat_i, rule_type, payoff, N, t_measure, MCS, assess_err, action_err);
 		//print_mat(mat_i, N);
 
 		double r_payoff = 0; // the payoff of the residents
@@ -328,6 +331,6 @@ int main(int argc, char *argv[]) {
 	std_err_r = sqrt(std_r / (double)(n_sample*(n_sample - 1)));
 	std_err_m = sqrt(std_m / (double)(n_sample*(n_sample - 1)));
 	
-	cout << resident_type << " " << r_avg << " " << std_err_r << " " << m_rule << " " << m_avg << " " << std_err_m << "\n";
+	cout << "L" << resident_type << " " << r_avg << " " << std_err_r << " L" << m_rule << " " << m_avg << " " << std_err_m << "\n";
 	return 0;
 }
