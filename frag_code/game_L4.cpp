@@ -166,13 +166,14 @@ int L1_rule(vector<vector<int>> &mat_f, int o, int d, int r, int act, int idx_er
 //	return bool_val;
 //}
 
-void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<double> &payoff, int N, int t_measure, int MCS){
+void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<double> &payoff, int N, int t_measure, int MCS, double err){
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> dist(0, N-1);
 	uniform_real_distribution<> dist_u(0, 1);
 	
-	vector<vector<double>> payoff_matrix = {{b-c, -c}, {b, 0}};
+	//vector<vector<double>> payoff_matrix = {{b-c, -c}, {b, 0}};
+	vector<double> count(N, 0);
 
 	for (int i=0; i<N; i++){
 		vector<int> sigma;
@@ -197,62 +198,49 @@ void ABM_complete(vector<vector<int>> &mat_i, vector<int> &rule_type, vector<dou
  			if (mat_i[d][d] == 1) act = mat_i[d][r];	
  			else act = 1;
  		}
-		if (t < t_measure) {
-			for (int o=0; o<N; o++) {
-    	   switch (rule_type[o]) {
-    	     case 1 :
-    	       update_od.push_back(L1_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 2 :
-    	       update_od.push_back(L2_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 3 :
-    	       update_od.push_back(L3_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 4 :
-    	       update_od.push_back(L4_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 5 :
-    	       update_od.push_back(L5_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 6 :
-    	       update_od.push_back(L6_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 7 :
-    	       update_od.push_back(L7_rule(mat_i, o, d, r, act, 0));
-    	       break;
-    	     case 8 :
-    	       update_od.push_back(L8_rule(mat_i, o, d, r, act, 0));
-    	       break;
-					}
+		for (int o=0; o<N; o++) {
+			int idx_err = dist_u(gen) < err ? 1 : 0; 
+  	  switch (rule_type[o]) {
+				case 1 :
+  	   	  update_od.push_back(L1_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 2 :
+  	   	  update_od.push_back(L2_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 3 :
+  	   	  update_od.push_back(L3_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 4 :
+  	   	  update_od.push_back(L4_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 5 :
+  	   	  update_od.push_back(L5_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 6 :
+  	   	  update_od.push_back(L6_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 7 :
+  	   	  update_od.push_back(L7_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
+  	   	case 8 :
+  	   	  update_od.push_back(L8_rule(mat_i, o, d, r, act, idx_err));
+  	   	  break;
 			}
-			for (int o=0; o<N; o++) mat_i[o][d] = update_od[o];
 		}
+		for (int o=0; o<N; o++) mat_i[o][d] = update_od[o];
 		//print_mat(mat_i, N);
 		if (t >= t_measure) {
-			int p1 = dist(gen); // player 1
-			int p2 = dist(gen); // player 2
-
-			int act1 = mat_i[p1][p2]; // for L3 ~ L8.
- 			if (rule_type[p1] == 1 || rule_type[p1] == 2) { // for L1 and L2.
- 				if (mat_i[p1][p1] == 1) act = mat_i[p1][p2];	
- 				else act1 = 1;
- 			}
-			int act2 = mat_i[p2][p1]; // for L3 ~ L8.
- 			if (rule_type[p2] == 1 || rule_type[p2] == 2) { // for L1 and L2.
- 				if (mat_i[p2][p2] == 1) act = mat_i[p2][p1];
- 				else act2 = 1;
- 			}
 			t_m += 1;
-			
-			int act1_idx = (1 - act1) / 2 ;
-			int act2_idx = (1 - act2) / 2 ;
-			
-			payoff[p1] += payoff_matrix[act1_idx][act2_idx];
-			payoff[p2] += payoff_matrix[act2_idx][act1_idx];
+			if (act == 1) {
+				payoff[d] -= c;
+				payoff[r] += b;
+			}
+			count[d] += 1;
+			count[r] += 1;
 		}
 		if (t == MCS) {
-			for (int i=0; i<N; i++) payoff[i] /= (double)t_m;
+			print_mat(mat_i, N);
+			for (int i=0; i<N; i++) payoff[i] /= count[i];
 			break;
 		}
 	}
@@ -282,8 +270,8 @@ void init_property(vector<int> &property, int N) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 5) {
-		cout << "./game_L4 N mutant_rule n_sample MCS t_measure \n";
+	if (argc < 6) {
+		cout << "./game_L4 N mutant_rule n_sample MCS t_measure err \n";
 		cout << "mutant_rule : 1 ~ 8 (leading eight). \n";
 		cout << "N should be set to be larger or equal to 50. \n";
 		exit(1);
@@ -294,10 +282,11 @@ int main(int argc, char *argv[]) {
 	int n_sample = atoi(argv[3]);
 	int MCS = atoi(argv[4]); // total Monte Carlo steps
 	int t_measure = atoi(argv[5]); // total Monte Carlo steps
+	double err = atof(argv[6]);
+	double frac_m = 0.3;
+	int num_m = (int)(N * frac_m);
 
 	int resident_type = 4; // L4
-	double frac_m = 0.06; // the fraction of mutatants
-	int num_m = (int)(N * frac_m);
 
 	vector<double> r_arr;
 	vector<double> m_arr;
@@ -311,7 +300,7 @@ int main(int argc, char *argv[]) {
 		//for (int i=0; i<N; i++) cout << rule_type[i] << " ";
 		//cout <<"\n";
 		vector<double> payoff(N, 0);
-		ABM_complete(mat_i, rule_type, payoff, N, t_measure, MCS);
+		ABM_complete(mat_i, rule_type, payoff, N, t_measure, MCS, err);
 		//print_mat(mat_i, N);
 
 		double r_payoff = 0; // the payoff of the residents
@@ -320,8 +309,8 @@ int main(int argc, char *argv[]) {
 			if (i < num_m) m_payoff += payoff[i];
 			else r_payoff += payoff[i];
 		}
-		r_payoff /= (double)(N - num_m)/(double)N;
-		m_payoff /= (double)(num_m)/(double)N;
+		r_payoff /= (double)(N-num_m);
+		m_payoff /= (double)(num_m);
 		r_arr.push_back(r_payoff);
 		m_arr.push_back(m_payoff);
 		r_avg += r_payoff;
