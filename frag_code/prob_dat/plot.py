@@ -2,14 +2,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-if (len(sys.argv) < 3):
-    print("python3 plot.py 'm or n' 'p, q, or r' rule_num")
+if (len(sys.argv) < 5):
+    print("python3 plot.py 'm or n' 'p, q, or r' rule_num ylog xlog")
     exit(1)
 
 M_max = 7
 m_or_n = sys.argv[1]
 prob_name = sys.argv[2]
 r = int(sys.argv[3])
+
+ylog = int(sys.argv[4])
+xlog = int(sys.argv[5])
+
 cluster_size_list = range(2, M_max + 1)
 
 dat = np.loadtxt("./dat/{}_L{}".format(prob_name, r))
@@ -59,6 +63,7 @@ plt.title("L{}".format(r),fontsize=17)
 plt.xticks(range(1,M_max+1), fontsize=14)
 plt.yticks(fontsize=14)
 plt.legend(fontsize=13)
-plt.yscale('log')
+if (ylog == 1) : plt.yscale('log')
+if (xlog == 1) : plt.xscale('log')
 #plt.savefig("{},{}_fixed,L{}.png".format(prob_name,m_or_n,r))
 plt.show()
