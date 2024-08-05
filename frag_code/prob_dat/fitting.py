@@ -18,28 +18,54 @@ def p7(X,a,b,c,d,f,g,h,k):
 	m, n = X
 	return ((b*m)*np.exp(-c*m) + (d*np.power(n,3) + f*np.power(n,2) + g*n)*np.exp(-h*n) + k)
 
-def r7(X,a,b,c,d,f):
+def R7(X,a,b,c):
 	m, n = X
-	return ((a*np.exp(b*n) + c*np.power(m,2) + d*m)*np.exp(f*m))
+	return (a + b*(m+n) + c*m*n)
 
-def q7(X,a,b,c,d,f,g):
+def Q7(X,a,b,c):
 	m, n = X
-	return (a*m +b*n +c/m +d/n +f*m*n +g)
+	return (a + b*(m+n) + c*m*n)
 
-def p8(X,a,b,c,d,f):
+def p8(X,a,b,c):
 	m, n = X
 	return (a*m)*(b - c*m - d*np.exp(f*n))
 
-def r8(X,a,b,c,d):
+def R8(X,a,b,c):
 	m, n = X
-	return ((a*np.exp(b*n) + c*np.power(m,2) )*np.exp(d*m))
+	return (a + b*(m+n) + c*m*n)
 
 dat = np.loadtxt("./dat/%s_L%d" %(prob_name, r_num))
-m = np.transpose(dat)[0]
-n = np.transpose(dat)[1]
-prob = np.transpose(dat)[2]
+m_arr = []
+n_arr = []
+prob_arr = []
 
-#print(prob)
+if (prob_name == 'q'):
+	for i in range(int(len(dat))):
+		if (i % 2 == 0):
+			m = dat[i,0];	n = dat[i,1]; prob1 = dat[i,2]; prob2 = dat[i+1,2]
+			if (m >= 4 and n >= 4):
+				prob = (prob1 + prob2)*m*n
+				m_arr.append(m); n_arr.append(n); prob_arr.append(prob)
+elif (prob_name == 'p' or prob_name == 'r'):
+	check_idx = 0
+	idx = 1
+	for i in range(int(len(dat))):
+		if (i == check_idx):
+			#m = dat[i,0]; n = dat[i,1]; prob = dat[i,2]
+			#m_arr.append(m); n_arr.append(n); prob_arr.append(prob)
+			idx += 2
+			check_idx += idx
+		else:
+			m = dat[i,0];	n = dat[i,1]; prob1 = dat[i,2]; prob2 = dat[i+1,2]
+			if (m >= 4 and n >= 4):
+				prob = (prob1 + prob2)*m*n
+				m_arr.append(m); n_arr.append(n); prob_arr.append(prob)
+			
+m = np.array(m_arr)
+n = np.array(n_arr)
+prob = np.array(prob_arr)
+
+print(prob)
 func_name = ""
 if (prob_name == 'p' and r_num == 7): 
 	popt, pcov = curve_fit(p7, (m,n), prob)
@@ -49,15 +75,15 @@ elif (prob_name == 'p' and r_num == 8):
 	fit_prob = p8((m,n), *popt)
 	func_name = "(am^2+ bm)(c/m - exp(dn)) (n=1 x)"
 elif (prob_name == 'q' and r_num == 7): 
-	popt, pcov = curve_fit(q7, (m,n), prob)
-	fit_prob = q7((m,n), *popt)
+	popt, pcov = curve_fit(Q7, (m,n), prob)
+	fit_prob = Q7((m,n), *popt)
 elif (prob_name == 'r' and r_num == 7): 
-	popt, pcov = curve_fit(r7, (m,n), prob)
-	fit_prob = r7((m,n), *popt)
-	#fit_prob = r7((m,n), popt[0],popt[1],popt[2],popt[3], popt[4], popt[5], popt[6])
+	popt, pcov = curve_fit(R7, (m,n), prob)
+	fit_prob = R7((m,n), *popt)
+	#fit_prob = R7((m,n), popt[0],popt[1],popt[2],popt[3], popt[4], popt[5], popt[6])
 elif (prob_name == 'r' and r_num == 8): 
-	popt, pcov = curve_fit(r8, (m,n), prob)
-	fit_prob = r8((m,n), *popt)
+	popt, pcov = curve_fit(R8, (m,n), prob)
+	fit_prob = R8((m,n), *popt)
 	func_name = "(a*exp(bn) + c*m^2)exp(dm)"
 
 #print(fit_prob)
