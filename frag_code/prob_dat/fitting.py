@@ -18,18 +18,18 @@ if (prob_name != 'p'):
 	ax = plt.figure().add_subplot(projection='3d')
 
 def P7(m,a,b):
-	return (a + b*m)
+	return (a*np.exp(-b*m))
 
 def R7(X,a,b,c):
 	m, n = X
-	return (a + b*(m+n) + c*m*n)
+	return (a  + np.power((m/n), b) + np.power((n/m), c))
 
 def Q7(X,a,b,c):
 	m, n = X
 	return (a + b*(m+n) + c*m*n)
 
-def P8(m,a,b):
-	return (a + b*m)
+def P8(m,a,b,c):
+	return (a*np.power(m,b) + c)
 
 def R8(X,a,b,c):
 	m, n = X
@@ -70,7 +70,7 @@ elif (prob_name == 'p'):
 				prob *= (m*n)
 				prob_sum += prob
 		if (check != 0) : m_arr.append(m); prob_arr.append(prob_sum)
-		print(m, " ",check)
+		#print(m, " ",check)
 		if (m >= M_fit):
 			m_fit.append(m); prob_fit.append(prob_sum)
 	
@@ -82,6 +82,7 @@ func_name = ""
 if (prob_name == 'p' and r_num == 7): 
 	popt, pcov = curve_fit(P7, m_fit, prob_fit)
 	fit_prob = P7(m, *popt)
+	func_name = "a*exp(-b*m)"
 elif (prob_name == 'p' and r_num == 8): 
 	popt, pcov = curve_fit(P8, m_fit, prob_fit)
 	fit_prob = P8(m, *popt)
@@ -116,11 +117,12 @@ if (prob_name != 'p'):
 else:
 	print(m)
 	print(prob)
-	plt.plot(m,prob, label="numerical data, L{}, {}(m,1)".format(r_num,prob_name), marker = 'o')
+	plt.plot(m,prob, label="numerical data, L{}, {}(m,m-1)".format(r_num,prob_name), marker = 'o')
 	plt.plot(m,fit_prob, label="{}".format(func_name), marker ='o')
 	plt.xticks(range(1,M_max+1))
-	plt.xlabel('m')
+	plt.xlabel('m', fontsize='20')
 	plt.xlim([1,M_max+1])
-	plt.legend(fontsize='7.5', loc='upper right')
+	plt.legend(fontsize='13', loc='upper right')
+	if (r_num == 7): plt.title("a={:.3f}, b={:.3f}".format(popt[0], popt[1]))
 
 plt.show()
