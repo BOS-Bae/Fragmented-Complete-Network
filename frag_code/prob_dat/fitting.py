@@ -20,10 +20,7 @@ M_max = 8
 
 color_list = ["black", "purple", "blue", "lightseagreen", "green","orange", "gold", "red"]
 
-print((prob_name == 'Q' and r_num == 8))
-if ((prob_name != 'P' and not(prob_name == 'Q' and r_num == 8)) and proj_mode != 1): 
-	print("?")
-	print(not(True))
+if ((prob_name != 'P' and prob_name != 'prime' and not(prob_name == 'Q' and r_num == 8)) and proj_mode != 1): 
 	ax = plt.figure().add_subplot(projection='3d')
 
 def P7(m,a,b):
@@ -37,21 +34,27 @@ def Q7(X,a,b,c):
 	m, n = X
 	return (a + b*(m+n) + c*m*n)
 
-def Q8(m,a,b):
-	m
-	return (a*np.exp(b*m))
+def Q8(n,a,b):
+	return (a*np.power(n,b))
 
 def P8(m,a,b):
-	return (a*np.exp(-b*m))
+	return (a*m + b)
 
 def R8(X,a,b,c):
 	m, n = X
 	return (a*np.power(n,b))*(np.exp(c*m))
 
+def prime7(m,a,b):
+	return a*(np.exp(-b*m))
+
+def prime8(m,a,b):
+	return (a*m + b)
+
 dat_name = 'none'
 if (prob_name == 'P') : dat_name = 'p'
 elif (prob_name == 'Q') : dat_name = 'q'
 elif (prob_name == 'R') : dat_name = 'r'
+elif (prob_name == 'prime') : dat_name = 'prime'
 
 
 dat = np.loadtxt("./dat/%s_L%d" %(dat_name, r_num))
@@ -88,7 +91,6 @@ elif (prob_name == 'R'):
 elif (prob_name == 'P'):
 	sorted_idx = np.argsort(np.array(dat[:,0]))
 	dat = dat[sorted_idx]
-
 	for m in range(1, M_max+1):
 		prob_sum = 0
 		check = 0
@@ -103,6 +105,13 @@ elif (prob_name == 'P'):
 		#print(m, " ",check)
 		if (m >= M_fit):
 			m_fit.append(m); prob_fit.append(prob_sum); err_fit.append(err)
+elif (prob_name == 'prime'):
+	for i in range(len(dat)):
+		m = dat[i,0];	prob = dat[i,1]; err = dat[i,2]
+		prob *= (m*(m-1))
+		m_arr.append(m); prob_arr.append(prob); err_arr.append(err)
+		if (m >= M_fit):
+			m_fit.append(m); prob_fit.append(prob); err_fit.append(err)
 	
 m_fit = np.array(m_fit); n_fit = np.array(n_fit); prob_fit = np.array(prob_fit)
 m = np.array(m_arr); n = np.array(n_arr); prob = np.array(prob_arr)
@@ -127,7 +136,7 @@ if (proj_mode == 0):
 		popt, pcov = curve_fit(Q8, n_fit, prob_fit)
 		fit_prob = Q8(n, *popt)
 		#fit_prob = Q7((m,n), *popt)
-		func_name = "a*exp(b*n)"
+		func_name = "a*(n^b)"
 	elif (prob_name == 'R' and r_num == 7): 
 		popt, pcov = curve_fit(R7, (m_fit,n_fit), prob_fit)
 		fit_prob = R7((m,n), *popt)
@@ -136,9 +145,17 @@ if (proj_mode == 0):
 		popt, pcov = curve_fit(R8, (m_fit,n_fit), prob_fit)
 		fit_prob = R8((m,n), *popt)
 		func_name = "(a*exp(bn) + c*m^2)exp(dm)"
+	elif (prob_name == 'prime' and r_num == 7): 
+		popt, pcov = curve_fit(prime7, m_fit, prob_fit)
+		fit_prob = prime7(m, *popt)
+		func_name = "a*exp(-bm)"
+	elif (prob_name == 'prime' and r_num == 8): 
+		popt, pcov = curve_fit(prime8, m_fit, prob_fit)
+		fit_prob = prime8(m, *popt)
+		func_name = "a*m + b"
 
 	print(popt)
-	if (prob_name != 'P' and r_num == 7):
+	if (prob_name != 'P' and prob_name != 'prime' and r_num == 7):
 		m_fit = list(m_fit); n_fit = list(n_fit); err_fit = list(err_fit);
 		ax.scatter(m,n,prob_arr, label="numerical data, L{}, {}(m,n)".format(r_num,prob_name))
 		ax.scatter(m,n, fit_prob, label="{}".format(func_name))
@@ -156,11 +173,11 @@ if (proj_mode == 0):
 		plt.xticks(range(1,M_max+1))
 		plt.xlabel('n', fontsize='20')
 		plt.xlim([1,M_max+1])
-		plt.legend(fontsize='13', loc='upper right')
+		plt.legend(fontsize='13', loc='lower right')
 		plt.title("a={:.3f}, b={:.3f}".format(popt[0], popt[1]))
 
-	elif (prob_name == 'P'):
-		plt.plot(m,prob, label="numerical data, L{}, {}(m,m-1)".format(r_num,prob_name), marker = 'o')
+	elif (prob_name == 'P' or prob_name == 'prime'):
+		plt.plot(m,prob, label="numerical data, L{}, {}(m)".format(r_num,'P*'), marker = 'o')
 		plt.plot(m,fit_prob, label="{}".format(func_name), marker ='o')
 		plt.xticks(range(1,M_max+1))
 		plt.xlabel('m', fontsize='20')
