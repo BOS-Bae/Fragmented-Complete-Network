@@ -26,9 +26,9 @@ if ((prob_name != 'P' and prob_name != 'prime' and not(prob_name == 'Q' and r_nu
 def P7(m,a,b):
 	return (a*np.exp(-b*m))
 
-def R7(X,a,b,c,d):
+def R7(X,a,b,c):
 	m, n = X
-	return (a*np.power(n,b))*(c*m + d) 
+	return (a + b*(m+n) + c*m*n)
 
 def Q7(X,a,b,c):
 	m, n = X
@@ -45,7 +45,7 @@ def R8(X,a,b,c):
 	return (a*np.power(n,b))*(np.exp(c*m))
 
 def prime7(m,a,b):
-	return a*(np.exp(-b*m))
+	return (a*np.power(m,b))
 
 def prime8(m,a,b):
 	return (a*m + b)
@@ -144,7 +144,7 @@ if (proj_mode == 0):
 	elif (prob_name == 'R' and r_num == 8): 
 		popt, pcov = curve_fit(R8, (m_fit,n_fit), prob_fit)
 		fit_prob = R8((m,n), *popt)
-		func_name = "(a*exp(bn) + c*m^2)exp(dm)"
+		func_name = "(a*n^b)*exp(c*m)"
 	elif (prob_name == 'prime' and r_num == 7): 
 		popt, pcov = curve_fit(prime7, m_fit, prob_fit)
 		fit_prob = prime7(m, *popt)
@@ -167,6 +167,17 @@ if (proj_mode == 0):
 		#ax.set_ylim([M_fit-1,M_max+1])
 		plt.legend(fontsize='10', loc='upper right')
 		if (prob_name == 'Q'): plt.title("a={:.3f}, b={:.3f}, c={:.3f}".format(popt[0], popt[1], popt[2]))
+	elif (prob_name == 'R' and r_num == 8):
+		m_fit = list(m_fit); n_fit = list(n_fit); err_fit = list(err_fit);
+		ax.scatter(m,n,prob_arr, label="numerical data, L{}, {}(m,n)".format(r_num,prob_name))
+		ax.scatter(m,n, fit_prob, label="{}".format(func_name))
+		ax.set_xticks(range(1,M_max+1))
+		ax.set_xlabel('m')
+		ax.set_yticks(range(1,M_max+1))
+		ax.set_ylabel('n')
+		#ax.set_xlim([M_fit-1,M_max+1])
+		#ax.set_ylim([M_fit-1,M_max+1])
+		plt.legend(fontsize='10', loc='upper right')
 	elif (prob_name == 'Q' and r_num == 8):
 		plt.plot(n,prob, label="numerical data, L{}, {}(1,n)".format(r_num,prob_name), marker = 'o')
 		plt.plot(n,fit_prob, label="{}".format(func_name), marker ='o')
