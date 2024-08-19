@@ -53,11 +53,13 @@ def power_curve(m, a,b):
 
 c_dist_tot = np.zeros([n_s,M_max])
 for n in range(n_s):
-    image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N,rule_num,N,rule_num,n))
-    cluster_info = seek_cluster(N, image)
-    c_size = cluster_size_info(cluster_info)
-    c_dist_n = size_distribution(c_size, M_max)
-    c_dist_tot[n] = c_dist_n
+	image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N,rule_num,N,rule_num,n))
+	cluster_info = seek_cluster(N, image)
+	if (n == n_s-1):
+		print(cluster_info)
+	c_size = cluster_size_info(cluster_info)
+	c_dist_n = size_distribution(c_size, M_max)
+	c_dist_tot[n] = c_dist_n
 
 c_dist = np.average(c_dist_tot,0)
 c_dist_err = np.std(c_dist_tot,0)/np.sqrt(n_s)
