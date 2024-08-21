@@ -53,33 +53,57 @@ def power_curve(m, a,b):
 
 c_dist_tot = np.zeros([n_s,M_max])
 for n in range(n_s):
-	image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N,rule_num,N,rule_num,n))
-	cluster_info = seek_cluster(N, image)
-	if (n == n_s-1):
-		print(cluster_info)
-	c_size = cluster_size_info(cluster_info)
-	c_dist_n = size_distribution(c_size, M_max)
-	c_dist_tot[n] = c_dist_n
+    image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n))
+    cluster_info = seek_cluster(N, image)
+    c_size = cluster_size_info(cluster_info)
+    c_dist_n = size_distribution(c_size, M_max)
+    c_dist_tot[n] = c_dist_n
 
 c_dist = np.average(c_dist_tot,0)
+cumul_dist = np.zeros(len(c_dist))
+for i in range(len(c_dist)):
+    cumul_dist[i] = sum(list(c_dist[i:]))
+    #cumul_dist[i] = sum(list(c_dist[:i+1]))
+
 c_dist_err = np.std(c_dist_tot,0)/np.sqrt(n_s)
 
 x_arr = range(1,int(M_max+1))
-popt, pcov = curve_fit(power_curve, x_arr[sl:] ,c_dist[sl:])
-fit_curve = power_curve(x_arr, *popt)
+#popt, pcov = curve_fit(power_curve, x_arr[sl:] ,c_dist[sl:])
+popt1, pcov1 = curve_fit(power_curve, x_arr[sl:] ,c_dist[sl:])
+popt2, pcov2 = curve_fit(power_curve, x_arr[sl:] ,cumul_dist[sl:])
+fit_curve1 = power_curve(x_arr, *popt1)
+fit_curve2 = power_curve(x_arr, *popt2)
 
-plt.plot(x_arr, c_dist, label="numerical data, L{}".format(rule_num), marker = 'o', color='blue')
+plt.plot(x_arr, c_dist, label="numerical data", marker = 'o', color='blue')
 plt.errorbar(x_arr, c_dist, yerr= c_dist_err, color='blue')
-plt.plot(x_arr, fit_curve, label="{:.1f}m^{:.2f}".format(popt[0], popt[1]), marker = 'o', color='lightseagreen')
-plt.legend(fontsize=16)
+plt.plot(x_arr, fit_curve1, label="{:.1f}m^{:.2f}".format(popt1[0], popt1[1]), marker = 'o', color='lightseagreen')
+plt.legend(fontsize=13)
 plt.xscale('log')
 plt.yscale('log')
-plt.title("N={}, {} MC samples".format(N, n_s), fontsize=20)
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_s))
 #plt.xticks(x_arr)
-plt.xlabel('M', fontsize=17)
-plt.ylabel('frequency', fontsize=17)
+plt.xlabel('M', fontsize=15)
+plt.ylabel('frequency', fontsize=15)
 plt.show()
 
+plt.plot(x_arr, cumul_dist, label="numerical data, F(m <= X)", marker = 'o', color='blue')
+plt.errorbar(x_arr, cumul_dist, yerr= c_dist_err, color='blue')
+plt.plot(x_arr, fit_curve2, label="{:.1f}m^{:.2f}".format(popt2[0], popt2[1]), marker = 'o', color='lightseagreen')
+plt.legend(fontsize=13)
+plt.xscale('log')
+plt.yscale('log')
+plt.xticks(fontsize=13)
+plt.yticks(fontsize=13)
+plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_s))
+#plt.xticks(x_arr)
+plt.xlabel('M', fontsize=15)
+plt.ylabel('cumulative frequency', fontsize=15)
+plt.show()
+#plt.savefig("L{}_cluster_dist.png".format(rule_num))
+
+'''
 plus=0
 negative=0
 
@@ -96,7 +120,7 @@ print("negative(%)=",negative/(N*N))
 
 fig,ax=plt.subplots()
 im=ax.imshow(image,cmap='gray')
-plt.title("N={}, L{} rule".format(N, rule_num), fontsize=20)
+plt.title("N={}, L{} rule".format(N, rule_num))
 plt.show()
 
 G=nx.Graph()
@@ -125,3 +149,4 @@ plt.axis("off")
 plt.tight_layout()
 plt.title("N={}, L{} rule".format(N, rule_num))
 plt.show()
+'''
