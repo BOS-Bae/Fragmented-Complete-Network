@@ -14,19 +14,19 @@ n_s = int(sys.argv[3])
 nbins = int(sys.argv[4])
 M_max = N
 
-op_dist = np.zeros(n_s)
+op_dist = []
+n_samples = 0
 for n in range(n_s):
     file = "./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n)
-    if os.path.getsize(file) > 0: 
+    if os.path.getsize(file) > 0:
         image = np.loadtxt(file)
         n_samples += 1
-        #image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n))
-				op_dist[n] = np.average(image)
+        op_dist.append(np.average(image))
 
 plt.hist(op_dist, bins=nbins, color="black", range = (-1,1))
 plt.xticks(np.arange(-1,1.5,0.5),fontsize=13)
 plt.yticks(fontsize=13)
-plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_s))
+plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
 #plt.xticks(x_arr)
 plt.xlabel('average opinion', fontsize=15)
 plt.show()

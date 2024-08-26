@@ -52,7 +52,7 @@ def size_distribution(c_size, M_max):
 def power_curve(m, a,b):
     return a*(np.power(m,b))
 
-c_dist_tot = np.zeros([n_s,M_max])
+c_dist_tot = []
 
 n_samples = 0
 for n in range(n_s):
@@ -64,9 +64,9 @@ for n in range(n_s):
         cluster_info = seek_cluster(N, image)
         c_size = cluster_size_info(cluster_info)
         c_dist_n = size_distribution(c_size, M_max)
-        c_dist_tot[n] = c_dist_n
+        c_dist_tot.append(c_dist_n)
 
-c_dist = np.average(c_dist_tot,0)
+c_dist = np.average(np.array(c_dist_tot),0)
 cumul_dist = np.zeros(len(c_dist))
 for i in range(len(c_dist)):
     cumul_dist[i] = sum(list(c_dist[i:]))
@@ -93,8 +93,8 @@ plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
 #plt.xticks(x_arr)
 plt.xlabel('M', fontsize=15)
 plt.ylabel('frequency', fontsize=15)
-#plt.show()
-plt.savefig("L{}_cluster_dist.png".format(rule_num))
+plt.show()
+#plt.savefig("L{}_cluster_dist.png".format(rule_num))
 plt.clf()
 
 plt.plot(x_arr, cumul_dist, label="numerical data, F(m <= X)", marker = 'o', color='blue')
@@ -109,8 +109,8 @@ plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
 #plt.xticks(x_arr)
 plt.xlabel('M', fontsize=15)
 plt.ylabel('cumulative frequency', fontsize=15)
-#plt.show()
-plt.savefig("L{}_cluster_cumul_dist.png".format(rule_num))
+plt.show()
+#plt.savefig("L{}_cluster_cumul_dist.png".format(rule_num))
 
 '''
 plus=0
