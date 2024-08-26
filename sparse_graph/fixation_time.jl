@@ -47,7 +47,8 @@ for n_idx in 1:n_sample
                 break
             end
         end
-        τ_arr[n_idx, p_idx] = τ
+        #τ_arr[n_idx, p_idx] = τ
+        τ_arr[n_idx, p_idx] = Opinions_average(σ_matrix, e_matrix, N)
     end
 end
 
