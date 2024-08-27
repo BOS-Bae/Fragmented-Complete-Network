@@ -30,7 +30,7 @@ def seek_cluster(N, image):
     return partition
 
 #To get cluster size from cluster information
-def cluster_size_info(cluster_info):
+def cluster_size_info(N,cluster_info):
     cluster_dist = np.zeros(int(max(cluster_info)))
     for i in range(1,int(max(cluster_info)+1)):
         for k in range(N):
@@ -52,6 +52,26 @@ def size_distribution(c_size, M_max):
 def power_curve(m, a,b):
     return a*(np.power(m,b))
 
+Check_mat1 = np.array([[-1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
+             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
+             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,-1]])
+c1_info = seek_cluster(len(Check_mat1), Check_mat1)
+c1_size = cluster_size_info(len(Check_mat1), c1_info)
+c1_dist_n = size_distribution(c1_size, len(Check_mat1))
+
+Check_mat2 = np.array([[1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
+             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
+             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,1]])
+c2_info = seek_cluster(len(Check_mat1), Check_mat2)
+c2_size = cluster_size_info(len(Check_mat2), c2_info)
+c2_dist_n = size_distribution(c2_size, len(Check_mat2))
+
+print(c1_size)
+print(c1_dist_n ,"\n")
+print(c2_size)
+print(c2_dist_n)
+
+
 c_dist_tot = []
 
 n_samples = 0
@@ -62,7 +82,7 @@ for n in range(n_s):
         n_samples += 1
         #image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n))
         cluster_info = seek_cluster(N, image)
-        c_size = cluster_size_info(cluster_info)
+        c_size = cluster_size_info(N, cluster_info)
         c_dist_n = size_distribution(c_size, M_max)
         c_dist_tot.append(c_dist_n)
 
@@ -71,7 +91,7 @@ cumul_dist = np.zeros(len(c_dist))
 for i in range(len(c_dist)):
     cumul_dist[i] = sum(list(c_dist[i:]))
     #cumul_dist[i] = sum(list(c_dist[:i+1]))
-
+1
 c_dist_err = np.std(c_dist_tot,0)/np.sqrt(n_samples)
 
 x_arr = range(1,int(M_max+1))
