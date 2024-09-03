@@ -1,4 +1,6 @@
 from scipy.optimize import curve_fit
+from scipy.optimize import minimize
+from scipy.special import zeta
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -13,7 +15,8 @@ N = int(sys.argv[1])
 n_s = int(sys.argv[2])
 sl = int(sys.argv[3])
 M_max = N
-
+x_arr = range(1,int(M_max+1))
+x_min = x_arr[sl]
 rule_num = 8
 
 #To seek cluster information from image matrix
@@ -66,15 +69,15 @@ c2_info = seek_cluster(len(Check_mat1), Check_mat2)
 c2_size = cluster_size_info(len(Check_mat2), c2_info)
 c2_dist_n = size_distribution(c2_size, len(Check_mat2))
 
-print(c1_size)
-print(c1_dist_n ,"\n")
-print(c2_size)
-print(c2_dist_n)
-
+#print(c1_size)
+#print(c1_dist_n ,"\n")
+#print(c2_size)
+#print(c2_dist_n)
 
 c_dist_tot = []
 
 n_samples = 0
+not_completed_arr = []
 for n in range(n_s):
     file = "./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n)
     if os.path.getsize(file) > 0: 
@@ -85,50 +88,110 @@ for n in range(n_s):
         c_size = cluster_size_info(N, cluster_info)
         c_dist_n = size_distribution(c_size, M_max)
         c_dist_tot.append(c_dist_n)
+    else :
+        not_completed_arr.append(n)
+
+#print(not_completed_arr)
 
 c_dist = np.average(np.array(c_dist_tot),0)
-cumul_dist = np.zeros(len(c_dist))
-for i in range(len(c_dist)):
-    cumul_dist[i] = sum(list(c_dist[i:]))
-    #cumul_dist[i] = sum(list(c_dist[:i+1]))
-1
-c_dist_err = np.std(c_dist_tot,0)/np.sqrt(n_samples)
+c_dist_err = np.std(np.array(c_dist_tot),0)/np.sqrt(n_samples)
 
 x_arr = range(1,int(M_max+1))
-#popt, pcov = curve_fit(power_curve, x_arr[sl:] ,c_dist[sl:])
-popt1, pcov1 = curve_fit(power_curve, x_arr[sl:] ,c_dist[sl:])
-popt2, pcov2 = curve_fit(power_curve, x_arr[sl:] ,cumul_dist[sl:])
-fit_curve1 = power_curve(x_arr, *popt1)
-fit_curve2 = power_curve(x_arr, *popt2)
+x_data = []
+c_data = []
+idx = 0
+cumul_dist = np.zeros(len(c_dist))
 
+if (c_dist[x_min] == 0):
+    print("x_min is not good value : y value is zero.")
+    exit(1)
+
+
+count1 = 0
+count2 = 0
+ln_x_sum1 = 0
+ln_x_sum2 = 0
+
+for i in range(len(c_dist)):
+    cumul_dist[i] = sum(list(c_dist[i:]))
+    if (c_dist[i] != 0):
+        idx = x_arr[i]
+        x_data.append(x_arr[i])
+        c_data.append(c_dist[i])
+        count1 += 1
+        ln_x_sum1 += np.log(x_arr[i])
+
+for i in range(len(cumul_dist)):
+    if (cumul_dist[i] != 0):
+        count2 += 1
+        ln_x_sum2 += np.log(x_arr[i])
+
+print(x_min)
+def loss_fn_1(a):
+    return -(-count1*np.log(zeta(a,x_min)) - a*ln_x_sum1)
+
+def loss_fn_2(a):
+    return -(-count2*np.log(zeta(a,x_min)) - a*ln_x_sum2)
+
+init_condition = 1.05
+res1 = minimize(loss_fn_1, x0 = [init_condition])
+res2 = minimize(loss_fn_2, x0 = [init_condition])
+
+a1 = res1.x; alpha1 = a1[0]
+#a2 = res2.x; alpha2 = a2[0]
+alpha2 = alpha1 - 1
+print("a1 = ", alpha1)
+print("a2 = ", alpha2)
+c_dist_err = np.std(np.array(c_dist_tot),0)/np.sqrt(n_samples)
+
+#print("M_sl = ", x_data[sl])
+#print("M_sl_cumul = ", x_arr[x_data[sl]-1])
+#print(x_data)
+#print(c_data)
+
+#popt1, pcov1 = curve_fit(power_curve, x_data[sl:] ,c_data[sl:])
+#popt2, pcov2 = curve_fit(power_curve, x_arr[int(x_data[sl]-1):] ,cumul_dist[int(x_data[sl]-1):])
+#fit_curve1 = power_curve(x_arr, *popt1)
+#fit_curve2 = power_curve(x_arr, *popt2)
+
+C1 = np.sum(c_dist[x_min-1 : ])/zeta(alpha1, x_min)
+C2 = np.sum(c_dist[x_min-1 : ])*np.power((1/x_min), -alpha2)
+plt.figure(figsize=(10,3.5))
 plt.plot(x_arr, c_dist, label="numerical data", marker = 'o', color='blue')
-plt.errorbar(x_arr, c_dist, yerr= c_dist_err, color='blue')
-plt.plot(x_arr, fit_curve1, label="{:.1f}m^{:.2f}".format(popt1[0], popt1[1]), marker = 'o', color='lightseagreen')
-plt.legend(fontsize=13)
+plt.errorbar(x_arr, c_dist, yerr= c_dist_err, fmt = 'o', color='blue')
+plt.plot(x_arr, C1*np.power(x_arr, -alpha1), label="exponent : {:.2f}".format(-alpha1), color='black', linestyle = 'dashed')
+plt.legend(fontsize=16)
 plt.xscale('log')
 plt.yscale('log')
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
+
+plt.xticks(fontsize=18)
+plt.yticks(fontsize=18)
+plt.xlim(0.9, idx+10)
+plt.ylim((1/n_samples)/2 ,max(list(c_dist))+1000)
+plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples), fontsize=20)
 #plt.xticks(x_arr)
-plt.xlabel('M', fontsize=15)
-plt.ylabel('frequency', fontsize=15)
+plt.xlabel('M', fontsize=18)
+plt.ylabel('frequency', fontsize=18)
 plt.show()
 #plt.savefig("L{}_cluster_dist.png".format(rule_num))
 plt.clf()
 
+plt.figure(figsize=(10,3.5))
 plt.plot(x_arr, cumul_dist, label="numerical data, F(m <= X)", marker = 'o', color='blue')
 plt.errorbar(x_arr, cumul_dist, yerr= c_dist_err, color='blue')
-plt.plot(x_arr, fit_curve2, label="{:.1f}m^{:.2f}".format(popt2[0], popt2[1]), marker = 'o', color='lightseagreen')
-plt.legend(fontsize=13)
+plt.plot(x_arr, C2*np.power(x_arr, -alpha2), label="exponent : {:.2f}".format(-alpha2), color='black', linestyle ='dashed')
+plt.legend(fontsize=16)
 plt.xscale('log')
 plt.yscale('log')
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
+
+plt.xticks(fontsize=18)
+plt.yticks(fontsize=18)
+plt.xlim(0.9, idx+10)
+plt.ylim((1/n_samples)/2,max(list(cumul_dist))+1000)
+plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples), fontsize=20)
 #plt.xticks(x_arr)
-plt.xlabel('M', fontsize=15)
-plt.ylabel('cumulative frequency', fontsize=15)
+plt.xlabel('M', fontsize=18)
+plt.ylabel('cumulative frequency', fontsize=18)
 plt.show()
 #plt.savefig("L{}_cluster_cumul_dist.png".format(rule_num))
 
