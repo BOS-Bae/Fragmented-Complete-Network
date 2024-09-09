@@ -50,25 +50,33 @@ def size_distribution(c_size, M_max):
             if s_val == s: dist_arr[idx] += 1
         idx += 1
     return dist_arr
-    
+
+#One click-version function. 
+#Whole functions above are made by Minwoo Bae. :)
+def get_cluster_size_distribution(N, image):
+    cluster_info = seek_cluster(N, image)
+    c_size = cluster_size_info(N, cluster_info)
+    c_dist_n = size_distribution(c_size, M_max)
+    return c_dist_n
+
 #To check whether this cluster size distribution has a form of power-law.
 def power_curve(m, a,b):
     return a*(np.power(m,b))
 
-Check_mat1 = np.array([[-1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
-             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
-             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,-1]])
-c1_info = seek_cluster(len(Check_mat1), Check_mat1)
-c1_size = cluster_size_info(len(Check_mat1), c1_info)
-c1_dist_n = size_distribution(c1_size, len(Check_mat1))
-
-Check_mat2 = np.array([[1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
-             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
-             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,1]])
-c2_info = seek_cluster(len(Check_mat1), Check_mat2)
-c2_size = cluster_size_info(len(Check_mat2), c2_info)
-c2_dist_n = size_distribution(c2_size, len(Check_mat2))
-
+#Check_mat1 = np.array([[-1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
+#             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
+#             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,-1]])
+#c1_info = seek_cluster(len(Check_mat1), Check_mat1)
+#c1_size = cluster_size_info(len(Check_mat1), c1_info)
+#c1_dist_n = size_distribution(c1_size, len(Check_mat1))
+#
+#Check_mat2 = np.array([[1,1,-1,-1,-1,-1,-1],[1,1,-1,-1,-1,-1,-1],
+#             [-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],[-1,-1,1,1,1,-1,-1],
+#             [-1,-1,-1,-1,-1,1,-1],[-1,-1,-1,-1,-1,-1,1]])
+#c2_info = seek_cluster(len(Check_mat1), Check_mat2)
+#c2_size = cluster_size_info(len(Check_mat2), c2_info)
+#c2_dist_n = size_distribution(c2_size, len(Check_mat2))
+#
 #print(c1_size)
 #print(c1_dist_n ,"\n")
 #print(c2_size)
@@ -83,10 +91,7 @@ for n in range(n_s):
     if os.path.getsize(file) > 0: 
         image = np.loadtxt(file)
         n_samples += 1
-        #image = np.loadtxt("./N{}_L{}_dat/N{}_L{}_image_s{}".format(N, rule_num, N, rule_num, n))
-        cluster_info = seek_cluster(N, image)
-        c_size = cluster_size_info(N, cluster_info)
-        c_dist_n = size_distribution(c_size, M_max)
+        c_dist_n = get_cluster_size_distribution(N, image)
         c_dist_tot.append(c_dist_n)
     else :
         not_completed_arr.append(n)
@@ -194,7 +199,7 @@ plt.xlabel('M', fontsize=18)
 plt.ylabel('cumulative frequency', fontsize=18)
 plt.show()
 #plt.savefig("L{}_cluster_cumul_dist.png".format(rule_num))
-
+print(idx)
 '''
 plus=0
 negative=0
