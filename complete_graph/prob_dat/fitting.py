@@ -41,8 +41,8 @@ def Q7(X, a, b, c):
     return (a + b*(m+n) + c*m*n)
 
 
-def Q8(n, a, b, c):
-    return (a + b*np.exp(-c*n))
+def Q8(n, a, b):
+    return (a*np.power(n,-b))
 
 
 def P8(X, a, b, c):
@@ -140,7 +140,7 @@ if (proj_mode == 0):
     elif (prob_name == 'Q' and r_num == 8):
         popt, pcov = curve_fit(Q8, n_fit, prob_fit)
         fit_prob = Q8(n, *popt)
-        func_name = "a + b*exp(-c*n)"
+        func_name = "a*n^(-b)"
     elif (prob_name == 'R' and r_num == 7):
         popt, pcov = curve_fit(R7, (m_fit, n_fit), prob_fit)
         fit_prob = R7((m, n), *popt)
@@ -168,8 +168,9 @@ if (proj_mode == 0):
         plt.yticks(fontsize=16)
         plt.xlabel('n', fontsize='20')
         plt.xlim([1, M_max+1])
-        plt.legend(fontsize='14.5', loc='upper right')
-        plt.title("a={:.3f}, b={:.3f}, c={:.3f}".format(popt[0], popt[1], popt[2]), fontsize=18)
+        plt.legend(fontsize='14.5', loc='lower left')
+        #plt.title("a={:.3f}, b={:.3f}, c={:.3f}".format(popt[0], popt[1], popt[2]), fontsize=18)
+        plt.title("a={:.3f}, b={:.3f}".format(popt[0], popt[1]), fontsize=18)
         if (xlog == 1):
             plt.xscale('log')
         if (ylog == 1):
