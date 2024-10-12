@@ -23,12 +23,14 @@ for n in range(n_s):
         n_samples += 1
         op_dist.append(np.average(image))
 
-plt.hist(op_dist, bins=nbins, color="black", range = (-1,1))
-plt.xticks(np.arange(-1,1.5,0.5),fontsize=13)
-plt.yticks(fontsize=13)
-plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
+plt.hist(op_dist, bins=nbins, color="blue", range = (-1,1))
+plt.xticks(np.arange(-1,1.5,0.5),fontsize=17)
+plt.yticks(fontsize=17)
+#plt.xlabel(fontsize=15)
+#plt.ylabel(fontsize=15)
+#plt.title("N={}, L{}, {} MC samples".format(N, rule_num, n_samples))
 #plt.xticks(x_arr)
-plt.xlabel('average opinion', fontsize=15)
+#plt.xlabel('average opinion', fontsize=15)
 plt.show()
 
 '''
