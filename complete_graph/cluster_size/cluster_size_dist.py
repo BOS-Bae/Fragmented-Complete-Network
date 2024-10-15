@@ -19,7 +19,6 @@ x_arr = range(1,int(M_max+1))
 x_min = x_arr[sl]
 rule_num = 8
 
-#To seek cluster information from image matrix
 def seek_cluster(N, image):
     partition = np.zeros(N)
     partition[0] = 1
@@ -32,7 +31,6 @@ def seek_cluster(N, image):
             if (image[i,j] == 1 and partition[i] != 0): partition[j] = partition[i]
     return partition
 
-#To get cluster size from cluster information
 def cluster_size_info(N,cluster_info):
     cluster_dist = np.zeros(int(max(cluster_info)))
     for i in range(1,int(max(cluster_info)+1)):
@@ -41,7 +39,6 @@ def cluster_size_info(N,cluster_info):
 
     return cluster_dist
 
-#To obtain cluster size 'distribution' from cluster sizes
 def size_distribution(c_size, M_max):
     dist_arr = np.zeros(int(M_max))
     idx = 0
