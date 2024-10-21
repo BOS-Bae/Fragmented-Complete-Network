@@ -40,7 +40,7 @@ def coupled_ODE(t, c, N):
 	dc_dt[0] = mul_factor*(sum(c[k-1] * (k - 1) - c[0]*c[k-1]*Q(k) for k in range(2, N+1)) - c[0]**2)
 
 	for k in range(2, N):
-		dc_dt[k-1] = mul_factor*(-(c[k-1] * (k-1) + c[k]*k) + c[0]*(c[k-2]*Q(k-1) - c[k-1]*Q(k)))
+		dc_dt[k-1] = mul_factor*(-(c[k-1] * (k-1) - c[k]*k) + c[0]*(c[k-2]*Q(k-1) - c[k-1]*Q(k)))
 
 	dc_dt[N-1] = mul_factor*(-c[N-1] * (N-1) + c[0]*c[N-2]*Q(N-1))
 	

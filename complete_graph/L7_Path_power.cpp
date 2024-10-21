@@ -11,13 +11,27 @@ constexpr int N = 7;
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
 
+bool check_absorbing(int rule_num, int mat_i[][N]);
+
 unsigned long long mat_to_idx(int mat[][N]);
 
 void balanced_idx(std::vector<unsigned long long> &bal_list);
 
+int L4rule(int Mat[][N], int o, int d, int r);
+
+int L6rule(int Mat[][N], int o, int d, int r);
+
+int L7rule(int mat_f[][N], int o, int d, int r);
+
+int L8rule(int mat_f[][N], int o, int d, int r);
+
 void L4_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 
 void L6_rule(int mat_f[][N], int o, int d, int r, int idx_err);
+
+void L7_rule(int mat_f[][N], int o, int d, int r, int idx_err);
+
+void L8_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 
 void n_list_gen(int n_num, int n_list[][N]);
 
@@ -34,9 +48,9 @@ void power_method(double err, int max_iter, int rule_num);
 */
 int main(int argc, char *argv[]) {
   int num_of_bal = (int) pow(2, N - 1);
-  if ((argc < 2) || (atoi(argv[2]) != 4 && atoi(argv[2]) != 6 &&  atoi(argv[2]) != 7)) {
+  if ((argc < 2) || (atoi(argv[2]) != 4 && atoi(argv[2]) != 6 &&  atoi(argv[2]) != 7 && atoi(argv[2]) != 8)) {
     printf("./L7_Path_power max_iter rule_num \n");
-    printf("rule_num : 4(L4_rule), 6(L6_rule?), or 7(L7_rule) \n");
+    printf("rule_num : 4(L4_rule), 6(L6_rule?), 7(L7_rule) or 8(L8_rule) \n");
     exit(1);
   }
   int max_iter = atoi(argv[1]);
@@ -44,6 +58,44 @@ int main(int argc, char *argv[]) {
 
   power_method(0, max_iter, rule_num);
   return 0;
+}
+
+bool check_absorbing(int rule_num, int mat_i[][N]){
+	bool bool_val = false;
+	int check = 0;
+	int count = 0;
+	int mat_later[N][N] = {0,};
+	
+	for (int o=0; o<N; o++){
+		for (int d=0; d<N; d++) mat_later[o][d] = mat_i[o][d];
+	}	
+ 	//std::copy(mat_i.begin(), mat_i.end(), mat_later.begin());
+	for (int o=0; o<N; o++){
+		for (int d=0; d<N; d++){
+			for (int r=0; r<N; r++){
+				int tmp = mat_later[o][d];
+        switch (rule_num) {
+          case 4 :
+            mat_later[o][d] = L4rule(mat_later, o, d, r);
+            break;
+          case 6 :
+            mat_later[o][d] = L6rule(mat_later, o, d, r);
+            break;
+					case 7 :
+						mat_later[o][d] = L7rule(mat_later, o, d, r);
+						break;
+					case 8 :
+						mat_later[o][d] = L8rule(mat_later, o, d, r);
+						break;
+        }
+				count += 1;
+				if (mat_later[o][d] == mat_i[o][d]) check += 1;
+				mat_later[o][d] = tmp;
+			}
+		}
+	}
+	if (count == check) bool_val = true;
+	return bool_val;
 }
 
 void balanced_idx(std::vector<unsigned long long> &bal_list) {
@@ -123,6 +175,46 @@ void n_list_gen(int n_num, int n_list[][N]) {
   }
 }
 
+int L6rule(int Mat[][N], int o, int d, int r){
+	int val = 0;
+	val = Mat[o][r]*Mat[d][r];
+
+	return val;
+}
+
+int L4rule(int Mat[][N], int o, int d, int r){
+	int val = 0;
+	if (Mat[o][d] == 1 && Mat[d][r] == 1 && Mat[o][r] == -1) val = 1;
+	else val = Mat[o][r]*Mat[d][r];
+
+	return val;
+}
+
+int L7rule(int mat_f[][N], int o, int d, int r) {
+	int val = mat_f[o][d];
+	if (mat_f[d][r] == 1) {
+		if (mat_f[o][d] == 1) val = 1;
+		else val = mat_f[o][r];
+	}
+	else if (mat_f[d][r] == -1)	{
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
+	}
+
+	return val;
+}
+
+int L8rule(int mat_f[][N], int o, int d, int r) {
+	int val = mat_f[o][d];
+	if (mat_f[d][r] == 1) val = mat_f[o][r];
+	else if (mat_f[d][r] == -1)	{
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
+	}
+	
+	return val;
+}
+
 void L4_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
   // mat_f should be empty matrix whose size is N by N.
   int val = mat_f[o][d];
@@ -146,6 +238,18 @@ void L7_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
     if (mat_f[o][d] == -1) val = mat_f[o][r];
   }
 	else {
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
+	}
+
+  mat_f[o][d] = idx_err == 0 ? val : -val;
+}
+
+void L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
+  // mat_f should be empty matrix whose size is N by N.
+  int val = mat_f[o][d];
+  if (mat_f[d][r] == 1) val = mat_f[o][r]; 
+	else if (mat_f[d][r] == -1) {
 		if (mat_f[o][d] == 1) val = -mat_f[o][r];
 		else val = -1;
 	}
@@ -201,13 +305,22 @@ void power_method(double err, int max_iter, int rule_num) {
 		else {
 			for (int i = 0 ; i < len_f; i++) s_i.push_back(s_f[i]);
 		}
-		if (t==0) opening << 0 << " : " << flip_elem << "\n";
-		else {
-			opening << t << " : ";
-			std::sort(s_f.begin(), s_f.end(), std::greater<unsigned long long>());
-			for (int k = 0; k < s_f.size(); k++) opening << s_f[k] << " ";
-			opening << "\n";
+		std::sort(s_f.begin(), s_f.end(), std::greater<unsigned long long>());
+		
+		if (t == max_iter - 1){
+			for (int k = 0; k < s_f.size(); k++) {
+				int mat_k[N][N] = {0,};
+    		idx_to_mat(s_f[k], mat_k);
+				if (check_absorbing(rule_num, mat_k)) opening << s_f[k] << " ";
+			}
 		}
+		//if (t==0) opening << 0 << " : " << flip_elem << "\n";
+		//else {
+		//	opening << t << " : ";
+		//	std::sort(s_f.begin(), s_f.end(), std::greater<unsigned long long>());
+		//	for (int k = 0; k < s_f.size(); k++) opening << s_f[k] << " ";
+		//	opening << "\n";
+		//}
 		s_f.clear();
 
 		int len = s_i.size();
@@ -235,6 +348,9 @@ void power_method(double err, int max_iter, int rule_num) {
                break;
              case 7 :
                L7_rule(mat_f, l, x, y, 0);
+               break;
+             case 8 :
+               L8_rule(mat_f, l, x, y, 0);
                break;
            }
         }
