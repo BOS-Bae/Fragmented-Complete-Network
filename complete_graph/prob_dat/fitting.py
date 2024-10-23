@@ -44,18 +44,14 @@ def Q7(X, a, b, c):
 def Q8(n, a, b):
     return a*np.power(n,-b)
 
-def P8(X, a, b, c, d):
+def P8(X, a, b, c):
     m, n = X
-    return a*np.power(m,-b)*(np.power(m,-c) + np.exp(-d*n))
+    return a*np.power(m,-b)*(m + np.exp(-c*n))
 
 
 def R8(X, a, b, c):
     m, n = X
     return a*np.exp(-b*m)*np.power(n,-c)
-    #return a*np.power(m,-b)*np.power(n,-c)
-
-    #return (a*np.exp(-b*m-c*n))
-
 
 def prime7(m, a, b):
     return (a*np.power(m, b))
@@ -149,7 +145,7 @@ if (proj_mode == 0):
     elif (prob_name == 'R' and r_num == 8):
         popt, pcov = curve_fit(R8, (m_fit, n_fit), prob_fit)
         fit_prob = R8((m_fit, n_fit), *popt)
-        func_name = "a*exp(-b*m-c*n)"
+        func_name = "a*exp(-b*m)n^(-c)"
     elif (prob_name == 'prime' and r_num == 7):
         popt, pcov = curve_fit(prime7, m_fit, prob_fit)
         fit_prob = prime7(m, *popt)
@@ -201,9 +197,9 @@ if (proj_mode == 0):
             r_num, prob_name))
         if (fitting_mode == 1):
             ax.scatter(m_fit, n_fit, fit_prob, label="{}".format(func_name))
-        ax.set_xticks(range(2, M_max+1), fontsize=15)
+        ax.set_xticks(range(2, M_max+1))
         ax.set_xlabel('m',fontsize=20)
-        ax.set_yticks(range(2, M_max+1), fontsize=15)
+        ax.set_yticks(range(2, M_max+1))
         ax.set_ylabel('n', fontsize=20)
         # ax.set_xlim([M_fit-1,M_max+1])
         # ax.set_ylim([M_fit-1,M_max+1])
