@@ -42,17 +42,19 @@ def Q7(X, a, b, c):
 
 
 def Q8(n, a, b):
-    return (a*np.power(n,-b))
+    return a*np.power(n,-b)
 
-
-def P8(X, a, b, c):
+def P8(X, a, b, c, d):
     m, n = X
-    return a*np.exp(-b*m)*(m + np.exp(-c*n))
+    return a*np.power(m,-b)*(np.power(m,-c) + np.exp(-d*n))
 
 
 def R8(X, a, b, c):
     m, n = X
-    return (a*np.exp(-b*m-c*n))
+    return a*np.exp(-b*m)*np.power(n,-c)
+    #return a*np.power(m,-b)*np.power(n,-c)
+
+    #return (a*np.exp(-b*m-c*n))
 
 
 def prime7(m, a, b):
@@ -102,7 +104,7 @@ if (prob_name != 'prime'):
                 m_fit.append(m)
                 n_fit.append(n)
                 prob_fit.append(prob); err_fit.append(err)
-else :
+elif (prob_name == 'prime') :
     for i in range(len(dat)):
         m = dat[i, 0]
         prob = dat[i, 1]
@@ -114,7 +116,6 @@ else :
              m_fit.append(m)
              n_fit.append(1)
              prob_fit.append(prob); err_fit.append(err)
-
 
 m_fit = np.array(m_fit)
 n_fit = np.array(n_fit)
@@ -132,7 +133,7 @@ if (proj_mode == 0):
         func_name = "a*exp(-b*m)"
     elif (prob_name == 'P' and r_num == 8):
         popt, pcov = curve_fit(P8, (m_fit, n_fit), prob_fit)
-        fit_prob = P8((m, n), *popt)
+        fit_prob = P8((m_fit, n_fit), *popt)
     elif (prob_name == 'Q' and r_num == 7):
         popt, pcov = curve_fit(Q7, (m_fit, n_fit), prob_fit)
         fit_prob = Q7((m, n), *popt)
@@ -147,7 +148,7 @@ if (proj_mode == 0):
         # fit_prob = R7((m,n), popt[0],popt[1],popt[2],popt[3], popt[4], popt[5], popt[6])
     elif (prob_name == 'R' and r_num == 8):
         popt, pcov = curve_fit(R8, (m_fit, n_fit), prob_fit)
-        fit_prob = R8((m, n), *popt)
+        fit_prob = R8((m_fit, n_fit), *popt)
         func_name = "a*exp(-b*m-c*n)"
     elif (prob_name == 'prime' and r_num == 7):
         popt, pcov = curve_fit(prime7, m_fit, prob_fit)
@@ -168,7 +169,7 @@ if (proj_mode == 0):
         plt.yticks(fontsize=16)
         plt.xlabel('n', fontsize='20')
         plt.xlim([1, M_max+1])
-        plt.legend(fontsize='14.5', loc='lower left')
+        plt.legend(fontsize='14.5', loc='upper right')
         #plt.title("a={:.3f}, b={:.3f}, c={:.3f}".format(popt[0], popt[1], popt[2]), fontsize=18)
         plt.title("a={:.3f}, b={:.3f}".format(popt[0], popt[1]), fontsize=18)
         if (xlog == 1):
@@ -196,13 +197,13 @@ if (proj_mode == 0):
         m_fit = list(m_fit)
         n_fit = list(n_fit)
         err_fit = list(err_fit)
-        ax.scatter(m, n, prob_arr, label="numerical data, L{}, {}(m,n)".format(
+        ax.scatter(m_fit, n_fit, prob_fit, label="numerical data, L{}, {}(m,n)".format(
             r_num, prob_name))
         if (fitting_mode == 1):
-            ax.scatter(m, n, fit_prob, label="{}".format(func_name))
-        ax.set_xticks(range(1, M_max+1), fontsize=15)
+            ax.scatter(m_fit, n_fit, fit_prob, label="{}".format(func_name))
+        ax.set_xticks(range(2, M_max+1), fontsize=15)
         ax.set_xlabel('m',fontsize=20)
-        ax.set_yticks(range(1, M_max+1), fontsize=15)
+        ax.set_yticks(range(2, M_max+1), fontsize=15)
         ax.set_ylabel('n', fontsize=20)
         # ax.set_xlim([M_fit-1,M_max+1])
         # ax.set_ylim([M_fit-1,M_max+1])
