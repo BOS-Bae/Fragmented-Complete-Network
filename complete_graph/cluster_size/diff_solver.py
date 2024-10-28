@@ -63,7 +63,7 @@ def coupled_ODE(t,c,N):
 	#return dc_dt
 
 #c_initial = list(np.random.uniform(low=0.00001, high=0.001, size=N))
-c_initial = list(0.0001*np.ones(N))
+c_initial = list(0.00001*np.ones(N))
 #print(c_initial)
 t_list = (0, T)
 #t_list = np.arange(0,T,0.05)
@@ -83,7 +83,7 @@ print(c_at_T)
 #c_at_T[2:] = c_at_T[2:] / sum_val
 c_at_T /= sum_val
 
-#np.savetxt('c_N{}_T{}.dat'.format(N,T), c)
+np.savetxt('./c_N{}_T{}.dat'.format(N,T), c_at_T)
 k = k_list[k_fit-1:k_fin-1]
 c = c_at_T[k_fit-1:k_fin-1]
 print(k)
@@ -106,7 +106,9 @@ plt.yticks(fontsize=15)
 plt.xscale('log')
 plt.yscale('log')
 plt.legend(fontsize=13)
-plt.show()
+np.savefig('./c_N{}_T{}.png'.format(N,T))
+#plt.show()
+
 
 #plt.scatter(np.linspace(0,T,len(sol.y[5,:])), sol.y[5,:]/sum_val)
 #plt.show()
