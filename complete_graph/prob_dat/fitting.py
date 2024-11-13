@@ -30,16 +30,13 @@ def P7(X, a, b):
     m, n = X
     return (a*np.exp(-b*m*n))
 
-
 def R7(X, a, b, c):
     m, n = X
     return (a + b*(m+n) + c*m*n)
 
-
 def Q7(X, a, b, c):
     m, n = X
     return (a + b*(m+n) + c*m*n)
-
 
 def Q8(n, a, b):
     return a*np.power(n,-b)
@@ -48,18 +45,15 @@ def P8(X, a, b, c):
     m, n = X
     return a*np.power(m,-b)*(m + np.exp(-c*n))
 
-
-def R8(X, a, b, c):
-    m, n = X
-    return a*np.exp(-b*m)*np.power(n,-c)
+def R8(X, a,b,c):
+	m, n = X
+	return 1/(a*np.power(m,2) + b*m + c*n)
 
 def prime7(m, a, b):
     return (a*np.power(m, b))
 
-
 def prime8(m, a, b):
     return (a*np.power(m,-b))
-
 
 dat_name = 'none'
 if (prob_name == 'P'):
@@ -90,7 +84,7 @@ if (prob_name != 'prime'):
         m_arr.append(m)
         n_arr.append(n)
         prob_arr.append(prob); err_arr.append(err)
-        if (r_num == 8 and prob_name == 'Q'): 
+        if (r_num == 8 and (prob_name == 'Q' or prob_name == 'R')): 
             if (n >= M_fit):
                 m_fit.append(m)
                 n_fit.append(n)
@@ -145,7 +139,7 @@ if (proj_mode == 0):
     elif (prob_name == 'R' and r_num == 8):
         popt, pcov = curve_fit(R8, (m_fit, n_fit), prob_fit)
         fit_prob = R8((m_fit, n_fit), *popt)
-        func_name = "a*exp(-b*m)n^(-c)"
+        func_name = "1/(am^2 + bm + cn)"
     elif (prob_name == 'prime' and r_num == 7):
         popt, pcov = curve_fit(prime7, m_fit, prob_fit)
         fit_prob = prime7(m, *popt)
@@ -197,9 +191,9 @@ if (proj_mode == 0):
             r_num, prob_name))
         if (fitting_mode == 1):
             ax.scatter(m_fit, n_fit, fit_prob, label="{}".format(func_name))
-        ax.set_xticks(range(2, M_max+1))
+        ax.set_xticks(range(1, M_max+1))
         ax.set_xlabel('m',fontsize=20)
-        ax.set_yticks(range(2, M_max+1))
+        ax.set_yticks(range(1, M_max+1))
         ax.set_ylabel('n', fontsize=20)
         # ax.set_xlim([M_fit-1,M_max+1])
         # ax.set_ylim([M_fit-1,M_max+1])
