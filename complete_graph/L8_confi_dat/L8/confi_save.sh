@@ -1,6 +1,6 @@
 #!/bin/bash
 
 N=$1
-
-./number_show.sh $N > ./flip_dat/uni-N$N-L8-flip-paradise.dat
-./mat_show $N 
+cidx=$2
+./number_show.sh $N $cidx > ./flip_dat/uni-N$N-L8-idx$cidx.dat
+./mat_show $N $cidx

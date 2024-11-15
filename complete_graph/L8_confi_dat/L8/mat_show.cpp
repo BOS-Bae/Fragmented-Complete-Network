@@ -11,7 +11,8 @@ unsigned long long mat_to_idx(std::vector<std::vector<int>> &mat);
 
 int main(int argc, char *argv[]) {
 		int N = atoi(argv[1]);
-		std::string filename = "./flip_dat/uni-N" + std::to_string(N) + "-L8-flip-paradise.dat";
+		unsigned long long cidx = atoi(argv[2]);
+		std::string filename = "./flip_dat/uni-N" + std::to_string(N) + "-L8-idx" + std::to_string(cidx) + ".dat";
     std::ifstream inputFile(filename);
     if (!inputFile) {
         std::cerr << "File is not available." << std::endl;

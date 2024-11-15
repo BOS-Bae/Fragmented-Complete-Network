@@ -1,5 +1,6 @@
 #!/bin/bash
 
 N=$1
+cidx=$2
 
-tr ' ' '\n' < flip_dat/N$N-L8-flip-paradise.dat | sort -n | uniq | paste -sd ' ' -
+tr ' ' '\n' < ./flip_dat/N$N-L8-idx$2.dat | sort -n | uniq | paste -sd ' ' -

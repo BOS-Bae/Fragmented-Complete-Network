@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 5;
+constexpr int N = 4;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
@@ -35,7 +35,7 @@ void L8_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 
 void n_list_gen(int n_num, int n_list[][N]);
 
-void power_method(double err, int max_iter, int rule_num);
+void power_method(double err, int max_iter, int rule_num, unsigned long long confi_idx);
 
 /*
 	init_vect_idx = 0 : r_i has elments with uniform values (=1/num_matrix)
@@ -48,15 +48,16 @@ void power_method(double err, int max_iter, int rule_num);
 */
 int main(int argc, char *argv[]) {
   int num_of_bal = (int) pow(2, N - 1);
-  if ((argc < 2) || (atoi(argv[2]) != 4 && atoi(argv[2]) != 6 &&  atoi(argv[2]) != 7 && atoi(argv[2]) != 8)) {
-    printf("./L8_Path_power max_iter rule_num \n");
+  if ((argc < 3) || (atoi(argv[2]) != 4 && atoi(argv[2]) != 6 &&  atoi(argv[2]) != 7 && atoi(argv[2]) != 8)) {
+    printf("./L8_Path_power max_iter rule_num init_confi_idx \n");
     printf("rule_num : 4(L4_rule), 6(L6_rule?), 7(L7_rule) or 8(L8_rule) \n");
     exit(1);
   }
   int max_iter = atoi(argv[1]);
   int rule_num = atoi(argv[2]);
+	unsigned long long confi_idx = atoi(argv[3]);
 
-  power_method(0, max_iter, rule_num);
+  power_method(0, max_iter, rule_num, confi_idx);
   return 0;
 }
 
@@ -257,7 +258,7 @@ void L8_rule(int mat_f[][N], int o, int d, int r, int idx_err) {
   mat_f[o][d] = idx_err == 0 ? val : -val;
 }
 
-void power_method(double err, int max_iter, int rule_num) {
+void power_method(double err, int max_iter, int rule_num, unsigned long long confi_idx) {
   /*
     init_vect_idx = 0 : r_i has elments with uniform values (=1/num_matrix)
     init_vect_idx = 1 : r_i has an element for a balanced index only
@@ -285,14 +286,14 @@ void power_method(double err, int max_iter, int rule_num) {
   std::ofstream opening;
   
 	char result[100];
-  sprintf(result, "./flip_dat/N%d-L%d-flip-paradise.dat", N, rule_num);
+  sprintf(result, "./flip_dat/N%d-L%d-idx%lld.dat", N, rule_num, confi_idx);
   opening.open(result);
 
-	unsigned long long flip_elem = 0;
- 	if (N==7) flip_elem = 425517493470087; // for 7 node reduction. (N=7)
-  else if (N==5) flip_elem = 33554429; // smallest perturbation from paradise (N=5, paradise is 33554431)
-  else if (N==4) flip_elem = 65533; // smallest perturbation from paradise (N=4, paradise is 65535)
-  else if (N==3) flip_elem = 509; // smallest perturbation from paradise (N=3)
+	unsigned long long flip_elem = confi_idx;
+ 	//if (N==7) flip_elem = 425517493470087; // for 7 node reduction. (N=7)
+  //else if (N==5) flip_elem = 33554429; // smallest perturbation from paradise (N=5, paradise is 33554431)
+  //else if (N==4) flip_elem = 65533; // smallest perturbation from paradise (N=4, paradise is 65535)
+  //else if (N==3) flip_elem = 509; // smallest perturbation from paradise (N=3)
 	
 	std::vector<unsigned long long> s_i = {};
 	std::vector<unsigned long long> s_f = {};
