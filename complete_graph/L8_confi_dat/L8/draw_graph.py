@@ -26,7 +26,8 @@ G = nx.from_numpy_array(adj, create_using=nx.DiGraph())
 mapping = {i: i + 1 for i in G.nodes}
 G = nx.relabel_nodes(G, mapping)
 
-pos = nx.spectral_layout(G)
+#pos = nx.spectral_layout(G)
+pos = nx.spring_layout(G)
 #pos = nx.kamada_kawai_layout(G)
 
 nodes_with_no_outgoing_links = [node for node, out_degree in G.out_degree() if out_degree == 0]

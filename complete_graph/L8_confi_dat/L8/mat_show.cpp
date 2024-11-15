@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 		for (int i = 0; i < idx_list.size(); i++) {
 			unsigned long long idx = idx_list[i];
 			std::vector<std::vector<int>> mat(N, std::vector<int> (N,0));
-
+			std::cout << idx << "\n";
 			idx_to_mat(idx, mat);
 			print_mat(mat);
 
