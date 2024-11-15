@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 4;
+constexpr int N = 5;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);

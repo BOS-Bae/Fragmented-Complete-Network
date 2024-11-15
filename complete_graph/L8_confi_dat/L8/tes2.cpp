@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 4;
+constexpr int N = 5;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
@@ -24,14 +24,14 @@ void L6_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 void n_list_gen(int n_num, int n_list[][N]);
 
 int main() {
-//unsigned long long mat_to_idx(int mat[][N]) {
-	//std::vector<std::vector<int>> mat_confi(N, std::vector<int> (N,-1));
-	int mat[N][N] = {{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
-	//print_mat(mat);
-
-	// {0,1:2} | 0->2 error
-	mat[0][0] = mat[1][1] = mat[2][2] = mat[3][3] = mat[0][1] = mat[1][0] = mat[0][2] = mat[2][0] = mat[1][2] = mat[2][1] = 1;
+	int mat[N][N] = {{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1}, {-1,-1,-1,-1,-1}};
+	mat[0][0] = mat[1][1] = mat[2][2] = mat[0][1] = mat[1][0] = mat[0][2] = mat[2][0] = mat[1][2] = mat[2][1] = 1;
+	mat[3][3] = mat[4][4] = mat[3][4] = mat[4][3] = 1;
 	mat[0][3] = 1;
+
+	//int mat[N][N] = {{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
+	//mat[0][0] = mat[1][1] = mat[2][2] = mat[3][3] = mat[0][1] = mat[1][0] = mat[0][2] = mat[2][0] = mat[1][2] = mat[2][1] = 1;
+	//mat[0][3] = 1;
 	print_mat(mat);
 	unsigned long long idx = mat_to_idx(mat);
 	std::cout << idx << "\n";
