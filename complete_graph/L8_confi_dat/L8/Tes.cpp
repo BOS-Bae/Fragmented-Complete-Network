@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 5;
+constexpr int N = 7;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
@@ -24,14 +24,22 @@ void L6_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 void n_list_gen(int n_num, int n_list[][N]);
 
 int main() {
-	int mat[N][N] = {{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1},{-1,-1,-1,-1,-1}, {-1,-1,-1,-1,-1}};
-	mat[0][0] = mat[1][1] = mat[2][2] = mat[0][1] = mat[1][0] = mat[0][2] = mat[2][0] = mat[1][2] = mat[2][1] = 1;
-	mat[3][3] = mat[4][4] = mat[3][4] = mat[4][3] = 1;
-	mat[3][0] = 1;
 
-	//int mat[N][N] = {{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1},{-1,-1,-1,-1}};
-	//mat[0][0] = mat[1][1] = mat[2][2] = mat[3][3] = mat[0][1] = mat[1][0] = mat[0][2] = mat[2][0] = mat[1][2] = mat[2][1] = 1;
-	//mat[0][3] = 1;
+	int mat[N][N];
+	std::vector<int> cluster_1 = {0,1,2,3};
+	std::vector<int> cluster_2 = {4,5,6};
+		
+	for (int i=0; i<N; i++){
+		for (int j=0; j<N; j++) mat[i][j] = -1;
+	}
+	for (int node1 = 0; node1 < N; node1++){
+		for (int node2 = 0; node2 < N; node2++){
+			if (node1 < cluster_2[0] && node2 < cluster_2[0]) mat[node1][node2] = mat[node2][node1] = 1;
+			else if (node1 >= cluster_2[0] && node2 >= cluster_2[0]) mat[node1][node2] = mat[node2][node1] = 1;
+		}
+	}
+	mat[cluster_1[0]][cluster_2[0]] = 1;
+	
 	print_mat(mat);
 	unsigned long long idx = mat_to_idx(mat);
 	std::cout << idx << "\n";
@@ -83,7 +91,7 @@ void balanced_idx(std::vector<unsigned long long> &bal_list) {
 
 
 void idx_to_mat(unsigned long long idx, int mat[][N]) {
-	int idx_tmp = idx;
+	unsigned long long idx_tmp = idx;
   for (int i = 0; i < N; i++) {
 		mat[i][i] = 1;
     for (int j = 0; j < N; j++) {
@@ -99,8 +107,8 @@ unsigned long long mat_to_idx(int mat[][N]) {
   idx = binary_num = 0;
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
-     	int element = ((int) (mat[i][j] + 1) / 2);
-     	idx += element * (int) pow(2, binary_num);
+     	unsigned long long element = ((unsigned long long) (mat[i][j] + 1) / 2);
+     	idx += element * (unsigned long long) pow(2, binary_num);
      	binary_num += 1;
     }
   }
