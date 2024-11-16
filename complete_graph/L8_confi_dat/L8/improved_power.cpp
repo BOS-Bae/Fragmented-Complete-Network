@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 5;
+constexpr int N = 7;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
   }
   int max_iter = atoi(argv[1]);
   int rule_num = atoi(argv[2]);
-	unsigned long long confi_idx = atoi(argv[3]);
+	unsigned long long confi_idx = strtoull(argv[3], nullptr, 10);
 
   power_method(0, max_iter, rule_num, confi_idx);
   return 0;
@@ -286,7 +286,7 @@ void power_method(double err, int max_iter, int rule_num, unsigned long long con
   std::ofstream opening;
   
 	char result[100];
-  sprintf(result, "./flip_dat/N%d-L%d-idx%lld.dat", N, rule_num, confi_idx);
+  sprintf(result, "./flip_dat/N%d-L%d-idx%llu.dat", N, rule_num, confi_idx);
   opening.open(result);
 
 	unsigned long long flip_elem = confi_idx;
