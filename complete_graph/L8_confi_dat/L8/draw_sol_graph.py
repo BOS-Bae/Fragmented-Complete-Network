@@ -50,14 +50,29 @@ if (spectral_or_spring == 0):
 	
 else : pos = nx.spring_layout(G)
 
+def adjust_positions(pos, shift_factor):
+    adjusted_pos = pos.copy()
+    nodes = list(pos.keys())
+    for i, node1 in enumerate(nodes):
+        for j, node2 in enumerate(nodes):
+            if i >= j:
+                continue
+            dist = np.linalg.norm(np.array(pos[node1]) - np.array(pos[node2]))
+            if dist < shift_factor:  
+                direction = np.array(pos[node1]) - np.array(pos[node2])
+                norm_direction = direction / np.linalg.norm(direction) if np.linalg.norm(direction) > 0 else np.random.rand(2)
+                adjusted_pos[node1] += norm_direction * 2 * shift_factor
+                adjusted_pos[node2] -= norm_direction * 2 * shift_factor
+    return adjusted_pos
+
+adjusted_pos = adjust_positions(pos, 0.02)
+
+edge_labels = nx.get_edge_attributes(G, 'weight')
+
 nodes_with_no_outgoing_links = [node for node, out_degree in G.out_degree() if out_degree == 0]
+node_colors = ['blue' if node in nodes_with_no_outgoing_links else 'lightblue' for node in G.nodes]
 
-node_colors = ['red' if node in nodes_with_no_outgoing_links else 'lightblue' for node in G.nodes]
-print(nodes_with_no_outgoing_links)
-plt.figure(figsize=(8, 6))
-nx.draw(G, pos, with_labels=True, node_size=200, node_color=node_colors,
-        font_size=8, font_weight="bold", arrows=True, arrowsize=10)
-
-#nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+nx.draw(G, adjusted_pos, with_labels=True, node_size=1800, node_color=node_colors,
+        font_size=8, font_color="red", font_weight="bold", arrows=True, arrowsize=10)
 
 plt.show()
