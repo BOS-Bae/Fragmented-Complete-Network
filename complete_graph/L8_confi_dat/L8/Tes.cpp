@@ -26,7 +26,7 @@ void n_list_gen(int n_num, int n_list[][N]);
 int main() {
 
 	int mat[N][N];
-	int slice_group = 4;
+	int slice_group = 3;
 	std::vector<int> cluster_1 = {}; std::vector<int> cluster_2 = {};
 	
 	for (int i=0; i<slice_group; i++) cluster_1.push_back(i); 
@@ -42,6 +42,7 @@ int main() {
 		}
 	}
 	mat[cluster_1[0]][cluster_2[0]] = 1;
+	//mat[cluster_1[0]][cluster_1[1]] = -1;
 	
 	print_mat(mat);
 	unsigned long long idx = mat_to_idx(mat);

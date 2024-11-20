@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
+shift_factor = 0
 
 def print_coupled_equations(w_connections, M):
     nodes = sorted(set(w_connections[:, 0]) | set(w_connections[:, 1]))
@@ -65,7 +66,7 @@ def adjust_positions(pos, shift_factor):
                 adjusted_pos[node2] -= norm_direction * 2 * shift_factor
     return adjusted_pos
 
-adjusted_pos = adjust_positions(pos, 0.02)
+adjusted_pos = adjust_positions(pos, shift_factor)
 
 edge_labels = nx.get_edge_attributes(G, 'weight')
 
@@ -73,6 +74,6 @@ nodes_with_no_outgoing_links = [node for node, out_degree in G.out_degree() if o
 node_colors = ['blue' if node in nodes_with_no_outgoing_links else 'lightblue' for node in G.nodes]
 
 nx.draw(G, adjusted_pos, with_labels=True, node_size=1800, node_color=node_colors,
-        font_size=8, font_color="red", font_weight="bold", arrows=True, arrowsize=10)
+        font_size=9, font_color="red", font_weight="bold", arrows=True, arrowsize=10)
 
 plt.show()
