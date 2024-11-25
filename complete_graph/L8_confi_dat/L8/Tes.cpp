@@ -6,7 +6,7 @@
 #include <array>
 #include <algorithm>
 
-constexpr int N = 5;
+constexpr int N = 6;
 
 // The reason for using 'usigned long long' : 2^(N*N) exceeds the maximum of 'int', when N=6.
 void idx_to_mat(unsigned long long idx, int mat[][N]);
@@ -24,7 +24,16 @@ void L6_rule(int mat_f[][N], int o, int d, int r, int idx_err);
 void n_list_gen(int n_num, int n_list[][N]);
 
 int main() {
-
+	//int mat_test[N][N]; // for N=6
+	//for (int i=0; i<N; i++){
+	//	for (int j=0; j<N; j++) {
+	//		if (i==j) mat_test[i][j] = 1;
+	//		else mat_test[i][j] = -1;
+	//	}
+	//}
+	//mat_test[1][0] = mat_test[2][0] = mat_test[1][2] = mat_test[2][1] = mat_test[0][3] = 1;
+	//mat_test[3][4] = mat_test[4][3] = mat_test[3][5] = mat_test[5][3] = mat_test[4][5] = mat_test[5][4] = 1;
+	//
 	int mat[N][N];
 	int slice_group = 3;
 	std::vector<int> cluster_1 = {}; std::vector<int> cluster_2 = {};
@@ -43,7 +52,10 @@ int main() {
 	}
 	mat[cluster_1[0]][cluster_2[0]] = 1;
 	//mat[cluster_1[0]][cluster_1[1]] = -1;
-	
+	//print_mat(mat_test);
+	//unsigned long long idx_test = mat_to_idx(mat_test);
+	//std::cout << idx_test << "\n \n";
+		
 	print_mat(mat);
 	unsigned long long idx = mat_to_idx(mat);
 	std::cout << idx << "\n";

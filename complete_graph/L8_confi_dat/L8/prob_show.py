@@ -33,7 +33,7 @@ idx_to_mat(s_i) # for test
 print("")
 
 for i in range(len(dat)):
-	if (dat[i,0] == s_i) :
+	if (dat[i,0] == s_i and dat[i,1] != s_i) :
 		print(int(dat[i,0]), " ", int(dat[i,1]), " ", int(dat[i,2]))
 		idx_to_mat(dat[i,1])
 

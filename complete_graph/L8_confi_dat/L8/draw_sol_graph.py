@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-shift_factor = 0
+shift_factor = 0.01
 
 def print_coupled_equations(w_connections, M):
     nodes = sorted(set(w_connections[:, 0]) | set(w_connections[:, 1]))
@@ -50,6 +50,7 @@ if (spectral_or_spring == 0):
 	pos = nx.spectral_layout(G)
 	
 else : pos = nx.spring_layout(G)
+#else : pos = nx.planar_layout(G)
 
 def adjust_positions(pos, shift_factor):
     adjusted_pos = pos.copy()
@@ -73,7 +74,7 @@ edge_labels = nx.get_edge_attributes(G, 'weight')
 nodes_with_no_outgoing_links = [node for node, out_degree in G.out_degree() if out_degree == 0]
 node_colors = ['blue' if node in nodes_with_no_outgoing_links else 'lightblue' for node in G.nodes]
 
-nx.draw(G, adjusted_pos, with_labels=True, node_size=1800, node_color=node_colors,
-        font_size=9, font_color="red", font_weight="bold", arrows=True, arrowsize=10)
+nx.draw(G, adjusted_pos, with_labels=True, node_size=2500, node_color=node_colors,
+        font_size=7, font_color="red", font_weight="bold", arrows=True, arrowsize=10)
 
 plt.show()
