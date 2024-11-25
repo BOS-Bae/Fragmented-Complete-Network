@@ -1,0 +1,15 @@
+f=(m+n)^2;
+T12[h_]:=h/f
+T13[k_]:=(n-k)/f
+T21[h_]:=(m-h-1)/f
+T23[k_]:=(n-k)/f
+T31[h_]:=(m-h-1)/f
+T32[k_]:=k/f
+Om[k_]:=k*(n-k)/f
+Op[k_,h_]:=(n-k)*(k+m-h)/f
+wm[k_]:=k*(n-k+1)/f
+wp[k_,h_]:=(n-k)*(k+m-h-1)/f
+Zm[h_]:=h*(m-h)/f
+Zp[k_,h_]:=(m-h-1)*(h+n-k+1)/f
+Xm[h_]:=h*(m-h-1)/f
+Xp[k_,h_]:=(m-h-1)*(h+n-k+2)/f
