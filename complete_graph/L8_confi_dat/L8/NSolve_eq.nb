@@ -1,0 +1,50 @@
+mRange = Range[2, 100];
+nRange = Range[1, 100];
+
+results = {};
+Do[
+f=(m+n)^2;
+rn[j_]:=(1-j/(n+1))*\[ImaginaryI]
+rp[j_]:=(1-(j-1)/(n+1))*\[ImaginaryI]
+qn[j_]:=1-j/m
+qp[j_]:=1-(j-1)/m
+T12[h_]:=h/f
+T13[k_]:=(n-k)/f
+T21[h_]:=(m-h-1)/f
+T23[k_]:=(n-k)/f
+T31[h_]:=(m-h-1)/f
+T32[k_]:=k/f
+Om[k_]:=k*(n-k)/f
+Op[k_,h_]:=(n-k)*(k+m-h)/f
+wm[k_]:=k*(n-k+1)/f
+wp[k_,h_]:=(n-k)*(k+m-h-1)/f
+Zm[h_]:=h*(m-h)/f
+Zp[k_,h_]:=(m-h-1)*(h+n-k)/f
+Xm[h_]:=h*(m-h-1)/f
+Xp[k_,h_]:=(m-h-1)*(h+n-k+1)/f
+g1=(m-1)/f;
+g3=n/f;
+  fileName = StringJoin["L8-m", ToString[m], "-n", ToString[n], "-eqs.dat"];
+  
+  If[FileExistsQ[fileName],
+    eqs = Import[fileName, "Text"];
+    solution = NSolve[ToExpression[eqs]];
+    targetVariable = ToExpression[StringJoin["q1", ToString[n - 1], "0"]];
+    targetValue = targetVariable /. solution;
+    AppendTo[results, {m, n, targetValue}];
+  ],
+  {m, mRange}, {n, nRange}
+];
+results
+
+outputFile = "/minwoo/L8-p-r-result.txt"; (*I have to check whether this path is correct.. tomorrow*)
+
+Export[outputFile, 
+  StringJoin[
+    StringRiffle[
+      Map[StringJoin[Riffle[ToString /@ #, ","]] &, results],
+      "\n"
+    ]
+  ],
+  "Text"
+];
