@@ -1,6 +1,6 @@
 import numpy as np
 
-N = 20
+N = 50
 R_mat = np.zeros([N+1,N+1])
 P_mat = np.zeros([N+1,N+1])
 
