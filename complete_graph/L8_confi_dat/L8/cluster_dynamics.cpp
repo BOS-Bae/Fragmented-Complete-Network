@@ -3,7 +3,11 @@
 #include <vector>
 #include <sstream>
 
-int main() {
+int main(int argc, char *argv[]) {
+
+		int m = atoi(argv[1]);
+		int n = atoi(argv[2]);
+
     std::string file_path_R = "L8-prob-R.dat"; 
     std::string file_path_P = "L8-prob-P.dat";
 
@@ -43,6 +47,7 @@ int main() {
         P.push_back(row2);
     }
     file_P.close();
-
+		
+		std::cout << P[m][n] << ", " << R[m][n] << "\n";
     return 0;
 }
