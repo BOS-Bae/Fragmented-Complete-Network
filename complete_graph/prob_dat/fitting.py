@@ -47,7 +47,7 @@ def P8(X, a, b, c):
 
 def R8(X, a,b,c):
 	m, n = X
-	return 1/(a*np.power(m,2) + b*m + c*n)
+	return (a/(n+1)*m + b*(m-c))
 
 def prime7(m, a, b):
     return (a*np.power(m, b))
