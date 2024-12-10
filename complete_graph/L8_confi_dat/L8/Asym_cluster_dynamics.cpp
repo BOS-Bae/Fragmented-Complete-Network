@@ -29,7 +29,7 @@ void cluster_size_distribution(vector<int> &g_info, vector<double> &c_dist, int 
 }
 
 double R(int m, int n) {
-	double prob = 2.9*exp(-0.78*(double)m*pow(double(m+n), -1.0/3.0))/(double)(m+n);
+	double prob = (2.5*exp(-((double)(m-1)/pow((double)(m+n), 0.4))) - 1.5*exp(-1.5*(double)(m-1)/pow((double)(m+n), 0.4)))/(double)(m+n);
 	return prob;
 }
 
@@ -108,10 +108,11 @@ void MC_cluster(vector<double> &c_dist, int N, int MCS, int init_option) {
 	
 			int m_idx = g_info[o]; int n_idx = g_info[d];
 			//for (int i=0; i<N; i++) cout << g_info[i] << " ";
-		
+
 			if (m_idx != n_idx and m != 1) {
 				if (dist_u(gen) <= P(m,n)) Fragmentation(g_info, o);
 				else if (dist_u(gen) > P(m,n) && dist_u(gen) <= P(m,n) + R(m,n)) Migration(g_info, o, d);
+				//cout << m << ", "  << n << " : " << P(m,n) << ", " << R(m,n) << ", " << P_star(m) << ", " << Q(n) << "\n";
 			}
 			else if (m_idx != n_idx and m==1) {
 				if (dist_u(gen) <= Q(n)) Migration(g_info, o, d);
@@ -123,11 +124,11 @@ void MC_cluster(vector<double> &c_dist, int N, int MCS, int init_option) {
 	}
 	cluster_size_distribution(g_info, c_dist, N);
 }
+
 int main(int argc, char *argv[]) {
-		if (argc < 3 || atoi(argv[1]) > 100 || atoi(argv[3]) > 2) {
+		if (argc < 3 || atoi(argv[3]) > 2) {
 			printf("./Asym_cluster_dynamics N MCS init_option \n");
 			printf("[init_option] {0, 1, 2} : {paradise, all-fragmented, random} \n");
-			printf("N must be less than or equal to 100. \n");
 			exit(1);
 		}
 		
