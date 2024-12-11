@@ -14,10 +14,9 @@ using std::exp;
 using std::pow;
 using std::tanh;
 
-void cluster_size_distribution(vector<int> &g_info, vector<double> &c_dist, int N) {
+void cluster_size_distribution(vector<int> &g_info, vector<double> &c_dist) {
 	std::unordered_map<int, int> freq;
 	for (int num : g_info) freq[num]++;
-	
 	std::unordered_map<int, int> freq_of_freq;
 	for (const auto& pair : freq) freq_of_freq[pair.second]++;
 
@@ -29,12 +28,16 @@ void cluster_size_distribution(vector<int> &g_info, vector<double> &c_dist, int 
 }
 
 double R(int m, int n) {
-	double prob = (2.5*exp(-((double)(m-1)/pow((double)(m+n), 0.4))) - 1.5*exp(-1.5*(double)(m-1)/pow((double)(m+n), 0.4)))/(double)(m+n);
+	double prob;
+	if (n > 1) {
+		prob = ((1.0 + exp((double)(-n)/pow((double)(m+n),0.4)))*(2.5*exp(-(double)(m-1)/pow((double)(m+n),0.4)) -1.5*exp(-1.5*(double)(m-1)/pow((double)(m+n),0.4))) / (double)(m+n));
+	}
+	else if (n == 1) prob = 2.80*pow((double)m, -2.24);
 	return prob;
 }
 
 double P(int m, int n) {
-	double prob = 1.0/((double)m + 2.4*pow((double)(m+n),1.0/3.0)*(1-tanh(0.31*(double)m*pow((double)(m+n), -1.0/3.0))));
+	double prob = 1.0/((double)m + 2.4*pow((double)(m+n),1.0/3.0)*(1.0-tanh(0.31*(double)m*pow((double)(m+n), -1.0/3.0))));
 	return prob;
 }
 
@@ -112,7 +115,6 @@ void MC_cluster(vector<double> &c_dist, int N, int MCS, int init_option) {
 			if (m_idx != n_idx and m != 1) {
 				if (dist_u(gen) <= P(m,n)) Fragmentation(g_info, o);
 				else if (dist_u(gen) > P(m,n) && dist_u(gen) <= P(m,n) + R(m,n)) Migration(g_info, o, d);
-				//cout << m << ", "  << n << " : " << P(m,n) << ", " << R(m,n) << ", " << P_star(m) << ", " << Q(n) << "\n";
 			}
 			else if (m_idx != n_idx and m==1) {
 				if (dist_u(gen) <= Q(n)) Migration(g_info, o, d);
@@ -120,9 +122,18 @@ void MC_cluster(vector<double> &c_dist, int N, int MCS, int init_option) {
 			else if (m_idx == n_idx and m!=1) {
 				if (dist_u(gen) <= P_star(m)) Fragmentation(g_info, o);
 			}
+			//cout << m << ", "  << n << " : " << P(m,n) << ", " << R(m,n) << ", " << P_star(m) << ", " << Q(n) << "\n";
 		}
 	}
-	cluster_size_distribution(g_info, c_dist, N);
+	cluster_size_distribution(g_info, c_dist);
+	
+	//int count_max_cluster = 0;
+	//for (int i=0; i<N; i++) {
+	//		cout << g_info[i] << " ";
+	//		if (g_info[i] == 0) count_max_cluster += 1;
+	//}
+	//
+	//if (init_option == 0) cout << "\n" << count_max_cluster;
 }
 
 int main(int argc, char *argv[]) {
@@ -137,7 +148,8 @@ int main(int argc, char *argv[]) {
 		int init_option = atoi(argv[3]);
     
     vector<double> c_dist(N+1, 0);
-		
+		//cout << R(14,2) << "\n";
+		//cout << R(14,1) << "\n";
 		MC_cluster(c_dist, N, MCS, init_option);
 		for (int k=0; k<N+1; k++) cout << c_dist[k] << " ";
 		cout << "\n";
