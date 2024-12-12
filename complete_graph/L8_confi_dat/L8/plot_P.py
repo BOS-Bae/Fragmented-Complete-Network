@@ -15,10 +15,10 @@ for N in np.arange(10,N_max+10,10):
 		R.append(R_dat[m,N-m])
 	m_list = np.array(m_arr); R_list = np.array(R);
 	plt.plot(m_list, R_list, marker='.', label="L={}".format(N))
-	#def fn(m):
-	#	return (1+np.exp((m-N)/N**0.4))*(2.5*np.exp(-1.0*(m-1)/N**0.4)-1.5*np.exp(-1.5*(m-1)/N**0.4)) / N
+	def fn(m):
+		return (1+np.exp((m-N)/N**0.4))*(2.5*np.exp(-1.0*(m-1)/N**0.4)-1.5*np.exp(-1.5*(m-1)/N**0.4)) / N
 
-	#plt.plot(m_list, fn(m_list), color='black')
+	plt.plot(m_list, fn(m_list), color='black')
 	
 plt.legend(fontsize=14)
 plt.xticks(fontsize=15)

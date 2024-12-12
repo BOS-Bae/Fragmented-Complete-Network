@@ -148,8 +148,14 @@ int main(int argc, char *argv[]) {
 		int init_option = atoi(argv[3]);
     
     vector<double> c_dist(N+1, 0);
-		//cout << R(14,2) << "\n";
-		//cout << R(14,1) << "\n";
+
+		cout << "1 -> 50: " << Q(50) << "\n";
+		cout << "50 -> 1: " << R(50,1) << "\n\n";
+		cout << "2 -> 50: " << R(2,50) << "\n";
+		cout << "50 -> 2: " << R(50,2) << "\n\n";
+		cout << "50 -> 6 (Fragementation): " << P(50,6) << "\n\n";
+		cout << "50 -> 49 (Fragementation): " << P(50,49) << "\n\n";
+
 		MC_cluster(c_dist, N, MCS, init_option);
 		for (int k=0; k<N+1; k++) cout << c_dist[k] << " ";
 		cout << "\n";

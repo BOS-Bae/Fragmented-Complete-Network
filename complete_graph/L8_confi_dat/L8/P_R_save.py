@@ -1,13 +1,13 @@
 import numpy as np
 
-N = 50
+N = 100
 R_mat = np.zeros([N+1,N+1])
 P_mat = np.zeros([N+1,N+1])
 
 def convert_complex(s):
     return complex(s.decode('utf-8').replace(" I", "j").replace(" ", ""))
 
-file_path = "./L8-p-r-result.txt" 
+file_path = "./L8-N{}-p-r-result.txt".format(N)
 with open(file_path, 'r') as f:
 		raw_data = f.readlines()
 

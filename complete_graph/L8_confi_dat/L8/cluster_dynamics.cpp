@@ -164,6 +164,14 @@ int main(int argc, char *argv[]) {
     
     vector<double> c_dist(N+1, 0);
 		
+		cout << "1 -> 50: " << Q(50) << "\n";
+		cout << "50 -> 1: " << R[50][1] << "\n\n";
+		cout << "2 -> 50: " << R[2][50] << "\n";
+		cout << "50 -> 2: " << R[50][2] << "\n\n";
+		cout << "3 -> 6 (Fragementation): " << P[3][6] << "\n";
+		cout << "3 -> 49 (Fragementation): " << P[3][49] << "\n\n";
+		cout << "50 -> 6 (Fragementation): " << P[50][6] << "\n";
+		cout << "50 -> 49 (Fragementation): " << P[50][49] << "\n\n";
 		MC_cluster(c_dist, R, P, N, MCS, init_option);
 		for (int k=0; k<N+1; k++) cout << c_dist[k] << " ";
 		cout << "\n";
