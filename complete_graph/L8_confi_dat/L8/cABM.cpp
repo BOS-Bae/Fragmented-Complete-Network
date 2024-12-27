@@ -11,29 +11,150 @@
 using std::cout;
 using std::vector;
 
-void import_initial_dist(int N, double p, vector<vector<int>> &dist_list) {
-    std::ostringstream filename;
-		filename << "N" << N << "-p" << std::fixed << std::setprecision(1) << p << "-L8.dat";
-		std::string filepath = filename.str();
+int L8_rule(vector<vector<int>> &mat_f, int o, int d, int r) {
+	int val = mat_f[o][d];
+	if (mat_f[d][r] == 1) val = mat_f[o][r];
+	else if (mat_f[d][r] == -1)	{
+		if (mat_f[o][d] == 1) val = -mat_f[o][r];
+		else val = -1;
+	}	
 
-		std::ifstream file(filepath);
-		if (!file.is_open()) {
-			std::cerr << "Error: Unable to open file: " << filepath << std::endl;
-			return;
-		}
-		dist_list.clear();
-		std::string line;
-		while (std::getline(file, line)) {
-				std::istringstream iss(line);
-				vector<int> row;
-				int value;
-				while (iss >> value) {
-					row.push_back(value);
-				}
-				dist_list.push_back(row);
-		}
-		file.close();
+	return val;
 }
+
+bool check_absorbing(vector<vector<int>> &mat_i, int N){
+	bool bool_val = false;
+	int check = 0;
+	int count = 0;
+	vector<vector<int>> mat_f(N, vector<int>(N,0));
+  std::copy(mat_i.begin(), mat_i.end(), mat_f.begin());
+	for (int o=0; o<N; o++){
+		for (int d=0; d<N; d++){
+			for (int r=0; r<N; r++){
+				int tmp = mat_f[o][d];
+				mat_f[o][d] = L8_rule(mat_f, o, d, r);
+        //switch (rule_num) {
+        //  case 4 :
+        //    mat_f[o][d] = L4_rule(mat_f, o, d, r);
+        //    break;
+        //  case 6 :
+        //    mat_f[o][d] = L6_rule(mat_f, o, d, r);
+        //    break;
+				//	case 7 :
+				//		mat_f[o][d] = L7_rule(mat_f, o, d, r);
+				//		break;
+				//	case 8 :
+				//		mat_f[o][d] = L8_rule(mat_f, o, d, r);
+				//		break;
+        //}
+				count += 1;
+				if (mat_f[o][d] == mat_i[o][d]) check += 1;
+				mat_f[o][d] = tmp;
+			}
+		}
+	}
+	if (count == check) bool_val = true;
+	return bool_val;
+}
+
+void print_mat(vector<vector<int>> Mat, int N){
+	for (int i=0; i<N; i++){
+		for (int j=0; j<N; j++){
+			cout << Mat[i][j] << " ";
+		}
+		cout << "\n";
+	}
+	cout << "\n";
+}
+
+void seek_cluster(int N, vector<vector<int>> &mat_f, vector<int> &g_info) {
+	g_info[0] = 1;
+	int group_idx = 2;
+	for (int i=0; i<N; i++) {
+		if (g_info[i] == 0) {
+			g_info[i] = group_idx;
+			group_idx += 1;
+		}
+		for (int j=0; j<N; j++) {
+			if (mat_f[i][j] == 1 && g_info[i] != 0) g_info[j] = g_info[i];
+		}
+	}
+}
+
+void gen_init_info(int N, double p, vector<int> &g_info) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dist(0,N-1);
+		std::uniform_real_distribution<> dist_u(0,1);
+
+		vector<vector<int>> mat_i(N, vector<int> (N,0));
+		
+		for (int i=0; i<N; i++) {
+			for (int j=0; j<N; j++) {
+				if (dist_u(gen) < p) mat_i[i][j] = 1;
+				else mat_i[i][j] = -1;
+			}
+		}
+		int count = 0;
+		int check_bool = 0;
+
+		while (true){
+			int val_check = 0;
+			int d = dist(gen);
+			int r = dist(gen);		
+			vector<int> update_od = {};
+
+			for (int o=0; o<N; o++) {
+					double rand_num = dist_u(gen);
+  	      update_od.push_back(L8_rule(mat_i, o, d, r));
+  	      //switch (rule_num) {
+  	      //  case 4 :
+  	      //    update_od.push_back(L4_rule(mat_i, o, d, r));
+  	      //    break;
+  	      //  case 6 :
+  	      //    update_od.push_back(L6_rule(mat_i, o, d, r));
+  	      //    break;
+  	      //  case 7 :
+  	      //    update_od.push_back(L7_rule(mat_i, o, d, r));
+  	      //    break;
+  	      //  case 8 :
+  	      //    update_od.push_back(L8_rule(mat_i, o, d, r));
+  	      //    break;
+					//}
+			}
+			for (int o=0; o<N; o++) mat_i[o][d] = update_od[o];
+			check_bool = 0;
+
+			if (check_absorbing(mat_i, N)) break;
+		}
+		//print_mat(mat_i, N);
+		seek_cluster(N, mat_i, g_info);
+}
+
+//void import_initial_dist(int N, double p, vector<vector<int>> &dist_list) {
+//    std::ostringstream filename;
+//		filename << "N" << N << "-p" << std::fixed << std::setprecision(1) << p << "-L8.dat";
+//		std::string filepath = filename.str();
+//		//cout << filepath << "\n";
+//
+//		std::ifstream file(filepath);
+//		if (!file.is_open()) {
+//			std::cerr << "Error: Unable to open file: " << filepath << std::endl;
+//			return;
+//		}
+//		dist_list.clear();
+//		std::string line;
+//		while (std::getline(file, line)) {
+//				std::istringstream iss(line);
+//				vector<int> row;
+//				int value;
+//				while (iss >> value) {
+//					row.push_back(value);
+//				}
+//				dist_list.push_back(row);
+//		}
+//		file.close();
+//}
 
 void import_P_R(vector<vector<double>> &R, vector<vector<double>> &P) {
     std::string file_path_R = "./L8-prob-R.dat"; 
@@ -153,17 +274,16 @@ int main(int argc, char *argv[]) {
 
     vector<vector<double>> R;
     vector<vector<double>> P;
-    vector<vector<int>> dist_list;
+    vector<int> g_info(N,0);
 		import_P_R(R, P);
-		import_initial_dist(N, p, dist_list);
+		gen_init_info(N, p, g_info);
 		//cout << dist_list.size() << "\n";
-		vector<int> g_init = dist_list[s_idx];
    	//cout << g_init.size() << "\n";
 		//for (int k=0; k<N; k++) cout << g_init[k] << " ";
 		//cout << "\n";
     vector<double> c_dist(N+1, 0);
 		
-		MC_cluster(c_dist, R, P, N, MCS, g_init);
+		MC_cluster(c_dist, R, P, N, MCS, g_info);
 		for (int k=0; k<N+1; k++) cout << c_dist[k] << " ";
 		cout << "\n";
 	return 0; 
