@@ -36,30 +36,16 @@ for l_idx in range(len(P_num_dat)):
 		R_num_m1[int(dat_p[1])] = dat_r[2]
 		R_err_m1[int(dat_p[1])] = dat_r[3]
 
-plt.figure(figsize=(10,7))
-P_num_m1[P_num_m1 == 0] = np.nan
-plt.plot(n_list[2:], P_exact_m1[2:], color='blue', label = "derived", marker='o')
-plt.plot(n_list[2:], P_num_m1[2:], color='lime', label = "numerical", marker='o')
-plt.errorbar(n_list[2:], P_num_m1[2:], yerr=P_err_m1[2:], color='lime')
-plt.xlabel('m', fontsize=16)
-plt.ylabel('P({},n)'.format(m), fontsize=16)
-plt.xticks(fontsize=17)
-plt.yticks(fontsize=17)
-plt.legend(fontsize=16)
-if (log_or_not == 1): plt.yscale('log')
-plt.show()
+tot_dat_P = []
+tot_dat_P.append(n_list[2:])
+tot_dat_P.append(P_exact_m1[2:])
+tot_dat_P.append(P_num_m1[2:])
+tot_dat_P.append(P_err_m1[2:])
+np.savetxt("./compare_dat/P_m{}.dat".format(int(m)), np.transpose(tot_dat_P))
 
-plt.figure(figsize=(10,7))
-R_num_m1[R_num_m1 == 0] = np.nan
-plt.plot(n_list[2:], R_exact_m1[2:], color='blue', label = "derived", marker='o')
-plt.plot(n_list[2:], R_num_m1[2:], color='lime', label = "numerical", marker='o')
-plt.errorbar(n_list[2:], R_num_m1[2:], yerr=R_err_m1[2:], color='lime')
-plt.xlabel('m', fontsize=16)
-plt.ylabel('R({},n)'.format(m), fontsize=16)
-plt.xticks(fontsize=17)
-plt.yticks(fontsize=17)
-plt.legend(fontsize=16)
-
-if (log_or_not == 1): plt.yscale('log')
-plt.show()
-
+tot_dat_R = []
+tot_dat_R.append(n_list[2:])
+tot_dat_R.append(R_exact_m1[2:])
+tot_dat_R.append(R_num_m1[2:])
+tot_dat_R.append(R_err_m1[2:])
+np.savetxt("./compare_dat/R_m{}.dat".format(int(m)), np.transpose(tot_dat_R))

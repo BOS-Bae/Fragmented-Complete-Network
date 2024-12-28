@@ -40,15 +40,16 @@ for N in N_arr:
 if (tot_check == len(list(N_arr))): print("Check : All cases show that there is only one largest cluster.")
 else: print("as a ratio of", count_non_single/(N_len*ns))
 
-plt.plot(N_arr, Avg_max_N, color="lightseagreen", label="average of max[k]",  marker='o')
-plt.errorbar(N_arr, Avg_max_N, yerr=np.array(Err_max_N)/np.sqrt(ns),color="lightseagreen")
+plt.plot(N_arr, np.array(Avg_max_N)/N, color="lightseagreen", label="average of max[k]",  marker='o')
+plt.errorbar(N_arr, np.array(Avg_max_N)/N, yerr=np.array(Err_max_N)/(N*np.sqrt(ns)),color="lightseagreen")
 plt.xlabel("N", fontsize=16)
-plt.ylabel("max[k]", fontsize=16)
-
+plt.ylabel("max[k]/N", fontsize=16)
+plt.xticks(N_arr)
 plt.show()
 
-plt.plot(N_arr, max_N, color="green", label="Maximum of max[k]",  marker='o')
+plt.plot(N_arr, np.array(max_N)/N, color="green", label="Maximum of max[k]",  marker='o')
 plt.xlabel("N", fontsize=16)
-plt.ylabel("max[k]", fontsize=16)
+plt.ylabel("max[k]/N", fontsize=16)
+plt.xticks(N_arr)
 
 plt.show()
