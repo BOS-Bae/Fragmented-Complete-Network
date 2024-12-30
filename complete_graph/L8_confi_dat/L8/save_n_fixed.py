@@ -41,11 +41,11 @@ tot_dat_P.append(m_list[2:])
 tot_dat_P.append(P_exact_n1[2:])
 tot_dat_P.append(P_num_n1[2:])
 tot_dat_P.append(P_err_n1[2:])
-np.savetxt("./compare_dat/P_n{}.dat".format(int(n)), np.transpose(tot_dat_P))
+np.savetxt("./fig_dat/P_n{}.dat".format(int(n)), np.transpose(tot_dat_P))
 
 tot_dat_R = []
 tot_dat_R.append(m_list[2:])
 tot_dat_R.append(R_exact_n1[2:])
 tot_dat_R.append(R_num_n1[2:])
 tot_dat_R.append(R_err_n1[2:])
-np.savetxt("./compare_dat/R_n{}.dat".format(int(n)), np.transpose(tot_dat_R))
+np.savetxt("./fig_dat/R_n{}.dat".format(int(n)), np.transpose(tot_dat_R))
