@@ -262,7 +262,7 @@ void MC_cluster(vector<double> &c_dist, vector<vector<double>> &R, vector<vector
 
 int main(int argc, char *argv[]) {
 		if (argc < 3 || atoi(argv[1]) > 100 || atof(argv[2]) < 0.5 || atof(argv[2]) > 0.9) {
-			printf("./cABM N p MCS s_idx \n");
+			printf("./cABM N p MCS \n");
 			printf("N must be less than or equal to 100. \n");
 			exit(1);
 		}
@@ -270,7 +270,7 @@ int main(int argc, char *argv[]) {
 		int N = atoi(argv[1]);
 		double p = atof(argv[2]);
 		int MCS = atoi(argv[3]);
-		int s_idx = atoi(argv[4]);
+		//int s_idx = atoi(argv[4]);
 
     vector<vector<double>> R;
     vector<vector<double>> P;
@@ -284,6 +284,9 @@ int main(int argc, char *argv[]) {
     vector<double> c_dist(N+1, 0);
 		
 		MC_cluster(c_dist, R, P, N, MCS, g_info);
+		//int max_idx1 = *std::max_element(g_info.begin(), g_info.end());
+		//cout << max_idx1 << "\n";
+
 		for (int k=0; k<N+1; k++) cout << c_dist[k] << " ";
 		cout << "\n";
 	return 0; 

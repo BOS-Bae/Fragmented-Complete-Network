@@ -32,6 +32,7 @@ numeric_result = result[:, 1:]
 seats = numeric_result.flatten()
 c_dist_ref = np.array(seats)
 c_dist_dat = []
+print(c_dist_ref)
 for i in range(len(c_dist_ref)):
 	c_dist_dat.append(int(c_dist_ref[i]))
 
