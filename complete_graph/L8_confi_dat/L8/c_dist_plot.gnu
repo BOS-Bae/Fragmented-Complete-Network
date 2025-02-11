@@ -9,7 +9,7 @@ set ytics ("10^{-6}" 1e-6, "10^{-5}" 1e-5, "10^{-4}" 1e-4, "10^{-3}" 1e-3, "10^{
 set lmargin 10
 set rmargin 5
 set xrange [1:100]
-set yrange [0.000001:0.65]
+set yrange [0.0000008:0.65]
 set style line 1 lt 1 lw 2 ps 2 linecolor rgb "black"
 
 set style data points
