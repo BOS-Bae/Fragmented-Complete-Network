@@ -1,7 +1,7 @@
 set terminal pdfcairo size 8, 3
 set output "three_C_k.pdf"
 set yrange [0.005:1.5]
-set key font "Helvetica, 23" 
+set key font "Helvetica, 30" 
 set xlabel font "Helvetica,40" 
 set xtics font "Helvetica,37"
 set ylabel font "Helvetica,40" 
