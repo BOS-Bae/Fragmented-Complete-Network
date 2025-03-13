@@ -1,4 +1,4 @@
-# Fragmented-Complete-Network
+# Indirect reciprocity as a dynamics for weak balance
 
 The following is a brief description of the codes that I have written for this work.
 
