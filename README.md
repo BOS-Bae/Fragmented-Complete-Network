@@ -17,6 +17,6 @@ Codes except for the ones below are also regarding L8 (or even L7), but not incl
   **Additional Python codes** to visualize the distribution of L8 or the one from empirical data are at ./complete_graph/L8_confi_dat/L8/fig_dat/.
 
 
-Plus, shell scripts in this repository are not necessary but useful to obtain numerical results.
+Plus, shell scripts in respective directories are not necessary but may be useful for obtaining numerical results.
 
 <br/>
