@@ -14,5 +14,5 @@ Codes except for the ones below are also regarding L8 (or even L7), but not incl
 
 * 'cABM.cpp' : a simulation code to conduct cluster dynamics for the cluster size distribution.
 
-  Additional Python codes to obtain the distribution of L8 or the one from empirical data are at ./complete_graph/L8_confi_dat/L8/fig_dat/.
+  Additional Python codes to visualize the distribution of L8 or the one from empirical data are at ./complete_graph/L8_confi_dat/L8/fig_dat/.
   <br/>
