@@ -4,7 +4,7 @@ The following is a brief description of the codes that I have written.
 
 Codes except for the ones below are also regarding L8 (or even L7), but not included in the results in our papers.
 
-$\\$
+\\
 
 * 'eqs.nb' : a Mathematica code used to obtain numerical values of transition probabilities in an exact way, is at ./complete_graph/L8_confi_dat/L8/Mathematica_code/.
 
