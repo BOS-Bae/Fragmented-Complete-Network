@@ -6,7 +6,7 @@ Codes except for the ones below are also regarding L8 (or even L7), but not incl
 
 <br/>
 
-* **'eqs.nb'** : a Mathematica code used to obtain numerical values of transition probabilities in an exact way, is at ./complete_graph/L8_confi_dat/L8/Mathematica_code/.
+* **'eqs.nb'** : a Mathematica code, used to obtain numerical values of transition probabilities in an exact way, is at ./complete_graph/L8_confi_dat/L8/Mathematica_code/.
 
   **Additional Python codes** for data post-processing are at ./complete_graph/L8_confi_dat/L8/.
 
