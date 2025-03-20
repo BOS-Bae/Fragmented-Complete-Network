@@ -18,3 +18,5 @@
 [0307/155843.364:ERROR:context.cc(166)] The cache_path is invalid. Defaulting to in-memory storage.
 [0307/155954.269:ERROR:context.cc(151)] The cache_path directory (C:\Users\BOS�ǽ��͵��\AppData\LocalLow\Adobe\AcroCef\DC\Acrobat\Cache) could not be created.
 [0307/155954.272:ERROR:context.cc(166)] The cache_path is invalid. Defaulting to in-memory storage.
+[0320/091526.252:ERROR:context.cc(151)] The cache_path directory (C:\Users\BOS�ǽ��͵��\AppData\LocalLow\Adobe\AcroCef\DC\Acrobat\Cache) could not be created.
+[0320/091526.257:ERROR:context.cc(166)] The cache_path is invalid. Defaulting to in-memory storage.
