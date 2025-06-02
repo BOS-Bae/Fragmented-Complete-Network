@@ -149,25 +149,24 @@ void ABM_complete(int rule_num, vector<vector<int>> &mat_i, int N){
 		int val_check = 0;
 		int d = dist(gen);
 		int r = dist(gen);
-		
-		vector<int> update_od = {};
-		for (int o=0; o<N; o++) {
-        switch (rule_num) {
-          case 4 :
-            update_od.push_back(L4_rule(mat_i, o, d, r));
-            break;
-          case 6 :
-            update_od.push_back(L6_rule(mat_i, o, d, r));
-            break;
-          case 7 :
-            update_od.push_back(L7_rule(mat_i, o, d, r));
-            break;
-          case 8 :
-            update_od.push_back(L8_rule(mat_i, o, d, r));
-            break;
-				}
+		int o = dist(gen);
+	
+		int val;
+    switch (rule_num) {
+      case 4 :
+        val = L4_rule(mat_i, o, d, r);
+        break;
+      case 6 :
+        val = L6_rule(mat_i, o, d, r);
+        break;
+      case 7 :
+        val = L7_rule(mat_i, o, d, r);
+        break;
+      case 8 :
+        val = L8_rule(mat_i, o, d, r);
+        break;
 		}
-		for (int o=0; o<N; o++) mat_i[o][d] = update_od[o];
+		mat_i[o][d] = val;
 		//print_mat(mat_i);
 		check_bool = 0;
 
@@ -177,7 +176,7 @@ void ABM_complete(int rule_num, vector<vector<int>> &mat_i, int N){
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		cout << "./ABM_error N rule_num n_run \n";
+		cout << "./solitary_ABM_error N rule_num n_run \n";
 		exit(1);
 	}
 
@@ -200,14 +199,16 @@ int main(int argc, char *argv[]) {
 		}
 		mat_i.push_back(sigma);
 	}
-	
+	int node1, node2;	
 	for (int n_iter=0; n_iter < n_run; n_iter++) {
 		ABM_complete(r, mat_i, N);
-		if (n_iter == n_run-1) print_mat(mat_i, N);
-		int node1 = dist(gen);
-		int node2 = dist(gen);
+		node1 = dist(gen);
+		node2 = dist(gen);
 		mat_i[node1][node2] *= -1;
 	}
+	// for printing the final configuration.
+	mat_i[node1][node2] *= -1;
+	print_mat(mat_i, N);
 
 	return 0;
 }

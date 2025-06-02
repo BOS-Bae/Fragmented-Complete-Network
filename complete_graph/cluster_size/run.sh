@@ -14,4 +14,4 @@ date
 
 cd $SLURM_SUBMIT_DIR
 
-./ABM 100 8 > N100_L8_image_s$1
+./ABM_error 100 8 $1 > ./N100_L8_dat/N100_L8_image_s$1
